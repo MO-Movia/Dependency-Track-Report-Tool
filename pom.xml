@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.modusoperandi</groupId>
+   <artifactId>utility.tpalv</artifactId>
+   <version>1.0.0</version>
+   <packaging>jar</packaging>
+   <name>Third Party Audit and License Validation Utility</name>
+   <url>http://www.modusoperandi.com</url>
+   <developers>
+      <developer>
+         <name>Nicholas J. Fiorello Jr</name>
+         <email>nfiorello@modusoperandi.com</email>
+         <organization>Modus Operandi</organization>
+         <organizationUrl>http://www.modusoperandi.com</organizationUrl>
+         <roles>
+            <role>architect</role>
+            <role>developer</role>
+         </roles>
+      </developer>
+   </developers>
+   <licenses>
+      <license>
+         <name />
+         <url />
+      </license>
+   </licenses>
+   <properties>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <java.level>8</java.level>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      <!-- Dependency Versions -->
+      <lib.spdx-tools.version>2.2.2</lib.spdx-tools.version>
+   </properties>
+   <dependencies>
+      <dependency>
+         <groupId>org.glassfish</groupId>
+         <artifactId>javax.json</artifactId>
+         <version>1.1.4</version>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.12</version>
+         <scope>test</scope>
+      </dependency>
+      <!-- SPDX -->
+      <dependency>
+         <groupId>org.spdx</groupId>
+         <artifactId>spdx-tools</artifactId>
+         <version>${lib.spdx-tools.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.apache.logging.log4j</groupId>
+               <artifactId>log4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.logging.log4j</groupId>
+               <artifactId>log4j-core</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.logging.log4j</groupId>
+               <artifactId>log4j-slf4j-impl</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.sf.saxon</groupId>
+               <artifactId>saxon</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.sf.saxon</groupId>
+               <artifactId>saxon-dom</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+   </dependencies>
+   <build>
+      <plugins>
+         <!-- Build an executable JAR with dependencies -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.1</version>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                     <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                           <mainClass>com.modusoperandi.utility.ThirdPartyAuditNLicenseValidation</mainClass>
+                        </transformer>
+                     </transformers>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+</project>

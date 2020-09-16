@@ -1,0 +1,5 @@
+## Format (one line for each valid license):
+## License name -> correct license name
+## License name -> correct license name
+## Line starting with "## " is considered as comment.
+MIT/X11 -> MIT License
