@@ -60,21 +60,18 @@ public class Processor {
 
 			c = (b.vulnerabilities - a.vulnerabilities);
 
-			if (0 == c) {
-				if (b.isLatestVersion != a.isLatestVersion) {
-					c = b.isLatestVersion ? -1 : 1;
-				}
-			}
-			
-			if (0 == c) {
-				if (b.isValidLicense != a.isValidLicense) {
-					c = b.isValidLicense ? -1 : 1;
-				}
-			}
-			
+			// The Valid License column contains all the information we need about the license – 
+			// either it is valid (it is in either the white list, approved list, or translate list), or it is not
+			// Valid == Compliant ie "license info (valid or not)" column alone is enough.  Thus, I don’t see any reason for the compliant column
 			if (0 == c) {
 				if (b.isCompliant != a.isCompliant) {
 					c = b.isCompliant ? -1 : 1;
+				}
+			}
+
+			if (0 == c) {
+				if (b.isLatestVersion != a.isLatestVersion) {
+					c = b.isLatestVersion ? -1 : 1;
 				}
 			}
 
@@ -334,12 +331,8 @@ public class Processor {
 			this.auditReport += "HASLATESTVERSION";
 			this.auditReport += SEP_DELIMITER;
 
-			// Valid License	
+			// Valid License (compliant or not)
 			this.auditReport += "VALIDLICENSE";
-			this.auditReport += SEP_DELIMITER;
-
-			// license info (compliant or not)
-			this.auditReport += "COMPLIANT";
 			this.auditReport += SEP_DELIMITER;
 			
 			// known vulnerabilities
@@ -373,14 +366,13 @@ public class Processor {
 			this.auditReport += libAudit.isLatestVersion ? OK_TEXT : "Not Latest";
 			this.auditReport += SEP_DELIMITER;
 
-			// Valid License	
-			this.auditReport += libAudit.isValidLicense ? OK_TEXT : "Invalid License [" + libAudit.license + "]";
+			// The Valid License column contains all the information we need about the license – 
+			// either it is valid (it is in either the white list, approved list, or translate list), or it is not
+			// Valid == Compliant ie "license info (valid or not)" column alone is enough.  Thus, I don’t see any reason for the compliant column
+			// license info (compliant or not)
+			this.auditReport += libAudit.isCompliant ? OK_TEXT : "Invalid License [" + libAudit.license + "]";
 			this.auditReport += SEP_DELIMITER;
 
-			// license info (compliant or not)
-			this.auditReport += libAudit.isCompliant ? OK_TEXT : "Not Compliant";
-			this.auditReport += SEP_DELIMITER;
-			
 			// known vulnerabilities
 			this.auditReport += this.getVulnerabilitiesText(libAudit.vulnerabilities);
 			this.auditReport += SEP_DELIMITER;
@@ -582,7 +574,10 @@ public class Processor {
 			String licName = this.whiteListMap.get(libName);
 			if (null != licName) {			
 				license[0] = licName; 
-				found = this.isApproved(licName);
+				// The Valid License column contains all the information we need about the license – 
+				// either it is valid (it is in either the white list, approved list, or translate list), or it is not
+				// Valid == Compliant ie "license info (valid or not)" column alone is enough.  Thus, I don’t see any reason for the compliant column
+				found = true;
 			}
 		} catch (Exception ex) {
 			this.logger.log( "checkWL error for " + libName + " : " + ex.getMessage());
@@ -621,7 +616,10 @@ public class Processor {
 			String correctLicName = this.whiteListMap.get(licName);
 			if (null != correctLicName) {
 				license[0] = correctLicName; 
-				found = this.isApproved(correctLicName);
+				// The Valid License column contains all the information we need about the license – 
+				// either it is valid (it is in either the white list, approved list, or translate list), or it is not
+				// Valid == Compliant ie "license info (valid or not)" column alone is enough.  Thus, I don’t see any reason for the compliant column
+				found = true;
 			}
 		} catch (Exception ex) {
 			this.logger.log( "checkXLate error for " + licName + " : " + ex.getMessage());
