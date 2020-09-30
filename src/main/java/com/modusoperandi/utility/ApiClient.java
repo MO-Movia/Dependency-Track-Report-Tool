@@ -35,6 +35,10 @@ public class ApiClient {
 	public String getLicense(String licenseID) throws ApiClientException {
 		return getAPIResponse(LICENSE_URL, licenseID);
     }
+	
+	public String getLicenseList() throws ApiClientException {
+		return getAPIResponse(LICENSE_URL, "concise");
+    }
 
 	private String getAPIResponse(String apiName, String apiParam) throws ApiClientException {
 		try {

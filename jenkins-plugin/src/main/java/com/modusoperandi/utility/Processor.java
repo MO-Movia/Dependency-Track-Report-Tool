@@ -87,6 +87,7 @@ public class Processor {
 	private static final String SEP_LINE = "------------------------------------------------------------------------\r\n";
 	private static final String OK_TEXT = "Yes";
 	private static final String SEP_INPUT = " -> ";
+	private static final String XLS_HEADER = "\"sep=" + SEP_DELIMITER + "\"";
 
     private final ConsoleLogger logger;
 	private final String appovedLic;
@@ -102,6 +103,7 @@ public class Processor {
 	private HashMap<String,String> whiteListMap = null;
 	private HashMap<String,String> licXlateMap = null;
 	private ArrayList<LibAudit> auditList = null;
+	private ArrayList<String> apiLicenses = null;
 
     public Processor(final ConsoleLogger logger, final String appovedLic, final String licXlate, final String whiteList, final ApiClient apiClient) {
         this.logger = logger;
@@ -117,6 +119,8 @@ public class Processor {
 
 			this.uniqueLicense = new HashMap<String,JsonObject>();
 			this.auditList = new ArrayList<LibAudit>();
+			
+			this.prepareLicenseListHeader();
 			
 			for(Object o: jsonArray){
 				if ( o instanceof JsonObject ) {
@@ -215,19 +219,7 @@ public class Processor {
 					this.logger.log( "auditReport license error for " + libName + " : " + ex.getMessage());
 				}
 				
-				if (null != licName) {				
-					try {
-						// deal multiple license ID here.
-						this.logger.log("BEGIN parsing " + licName);
-						final AnyLicenseInfo licenseInfo = LicenseInfoFactory.parseSPDXLicenseString(licName);
-						this.logger.log("END parsing " + licName);
-						libAudit.isValidLicense = parseAnyLicenseInfo(licenseInfo, libName);
-					} catch (InvalidLicenseStringException ex) {
-						this.logger.log( "auditReport license ID error for " + libName + " : " + ex.getMessage());
-					}
-				} else {
-					libAudit.isValidLicense = false;
-				}
+				libAudit.isValidLicense = this.isValidLicenseEx(libAudit, libName, licName);
 				licID = licName;
 				skipLicText = true;
 			}
@@ -245,7 +237,7 @@ public class Processor {
 
 			// license info (compliant or not)
 			final String[] license = {licName};// always use the compliant license name
-			libAudit.isCompliant = this.isCompliant(libName, licName, license);
+			libAudit.isCompliant = this.isCompliant(libAudit, libName, licName, license);
 			
 			// known vulnerabilities
 			libAudit.vulnerabilities = jsonObj.getJsonObject("metrics").getInt("vulnerabilities");
@@ -309,7 +301,7 @@ public class Processor {
 	private void prepareAuditReportHeader() {
 		try {
 			// Easy trick to open in Excel formatted.
-			this.auditReport += "\"sep=" + SEP_DELIMITER + "\"";
+			this.auditReport += XLS_HEADER;
 			this.auditReport += NEW_LINE;
 			
 			// library name
@@ -339,13 +331,35 @@ public class Processor {
 			// known vulnerabilities
 			this.auditReport += "VULNERABILITIES";
 			this.auditReport += SEP_DELIMITER;
+
 			this.auditReport += NEW_LINE;
 		} catch (Exception ex) {
 			this.logger.log( "prepareAuditReportHeader " + ex.getMessage());
 		}	
 	}
 	
-	private void prepareAuditReport(LibAudit libAudit) {
+	private void prepareLicenseListHeader() {
+		try {
+			// Easy trick to open in Excel formatted.
+			this.licenseList += XLS_HEADER;
+			this.licenseList += NEW_LINE;
+			
+			this.licenseList += "LIBRARY";
+			this.licenseList += SEP_DELIMITER;
+			
+			this.licenseList += "VERSION";
+			this.licenseList += SEP_DELIMITER;
+			
+			this.licenseList += "LICENSE";
+			this.licenseList += SEP_DELIMITER;
+
+			this.licenseList += NEW_LINE;
+		} catch (Exception ex) {
+			this.logger.log( "prepareLicenseListHeader " + ex.getMessage());
+		}	
+	}
+	
+	private void prepareAuditReport(final LibAudit libAudit) {
 		try {
 			// library name
 			this.auditReport += libAudit.name;
@@ -377,6 +391,7 @@ public class Processor {
 			// known vulnerabilities
 			this.auditReport += this.getVulnerabilitiesText(libAudit.vulnerabilities);
 			this.auditReport += SEP_DELIMITER;
+
 			this.auditReport += NEW_LINE;
 		} catch (Exception ex) {
 			this.logger.log( "prepareAuditReport " + ex.getMessage());
@@ -416,9 +431,13 @@ public class Processor {
 			// make this csv since it is still readable so that it could be brought into excel..
 			this.licenseList += libName;
 			this.licenseList += SEP_DELIMITER;
+			
 			this.licenseList += libVersion;
 			this.licenseList += SEP_DELIMITER;
+			
 			this.licenseList += licName;
+			this.licenseList += SEP_DELIMITER;
+			
 			this.licenseList += NEW_LINE;
 		} catch (Exception ex) {
 			this.logger.log( "prepareLicenseList error for " + libName + " : " + ex.getMessage());
@@ -483,8 +502,61 @@ public class Processor {
 		}
 		return jsonArrr;
 	}
+	
+	private boolean isValidLicenseEx(final LibAudit libAudit, final String libName, final String licName) {
+		boolean isValid = false;
 
-	private boolean isCompliant(final String libName, final String licName, final String[] license) {
+		if (null != licName) {				
+			try {
+				// deal multiple license ID here.
+				this.logger.log("BEGIN parsing " + licName);
+				final AnyLicenseInfo licenseInfo = LicenseInfoFactory.parseSPDXLicenseString(licName);
+				this.logger.log("END parsing " + licName);
+				isValid = parseAnyLicenseInfo(licenseInfo, libName);
+			} catch (InvalidLicenseStringException ex) {
+				this.logger.log("auditReport license ID error for " + libName + " : " + ex.getMessage());
+			}
+		}
+
+		return isValid;
+	}
+	
+	protected void getLicenseList() {
+		try {
+			if(null == apiLicenses) {
+				final JsonArray jsonArray = this.getJsonArray(this.apiClient.getLicenseList());
+				
+				this.apiLicenses = new ArrayList<String>();
+
+				for(Object o: jsonArray){
+					if ( o instanceof JsonObject ) {
+						this.apiLicenses.add(((JsonObject)o).getString("name"));
+					}
+				}
+			}
+		} catch (Exception ex) {
+			this.logger.log( "getLicenseList error " + ex.getMessage());
+		}
+	}
+	
+	protected boolean isLicenseNameValid(final String licName) {
+		boolean isValid = false;
+		
+		try {
+			getLicenseList();
+			isValid = this.apiLicenses.contains(licName);			
+		} catch (Exception ex) {
+			this.logger.log( "isLicenseNameValid for " + licName + " error " + ex.getMessage());
+		}
+		
+		if(!isValid) {
+			this.logger.log(licName + " is NOT a valid license name");
+		}
+		
+		return isValid;
+	}
+
+	private boolean isCompliant(final LibAudit libAudit, final String libName, final String licName, final String[] license) {
 		boolean compliant = false;
 		
 		try {
@@ -498,6 +570,13 @@ public class Processor {
 			
 			if(!compliant) {
 				compliant = this.checkXLate(licName, license);
+			}
+			
+			// I am curious. If I put in a white-list, and give you a license name for a module that is still not approved, what will happen?  
+			// My desire would be that it still shows invalid license, and shows the invalid license from the white-list input file.
+			if(compliant && !isLicenseNameValid(license[0])) {
+				libAudit.license = license[0];
+				compliant = false;
 			}
 		} catch (Exception ex) {
 			this.logger.log( "isCompliant error " + ex.getMessage());
