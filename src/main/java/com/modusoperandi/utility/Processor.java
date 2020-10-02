@@ -312,19 +312,19 @@ public class Processor {
 			this.auditReport += SEP_DELIMITER;
 			
 			// used version
-			this.auditReport += "USEDVERSION";
+			this.auditReport += "USED VERSION";
 			this.auditReport += SEP_DELIMITER;
 			
 			// latest version
-			this.auditReport += "LATESTVERSION";
+			this.auditReport += "LATEST VERSION";
 			this.auditReport += SEP_DELIMITER;
 			
 			// Not latest version Flag
-			this.auditReport += "HASLATESTVERSION";
+			this.auditReport += "HAS LATEST VERSION";
 			this.auditReport += SEP_DELIMITER;
 
 			// Valid License (compliant or not)
-			this.auditReport += "VALIDLICENSE";
+			this.auditReport += "VALID LICENSE";
 			this.auditReport += SEP_DELIMITER;
 			
 			// known vulnerabilities
