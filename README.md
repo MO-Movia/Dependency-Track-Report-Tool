@@ -1,8 +1,8 @@
 # Third Party Audit & License Validation Utility (TPALVU)
 
 ### Download Source
- - git clone https://gitlab.com/firmusoft/mo-lvu.git  
- - cd *mo-lvu*
+ - git clone https://github.com/MO-Movia/Dependency-Track-Report-Tool.git  
+ - cd *Dependency-Track-Report-Tool*
  
 ## Prerequisite
  - Java 8 u162 (or higher), but not Java 9+
@@ -45,7 +45,7 @@ and separated by a space.
 
 In order to overrride the configurations in the config.properties to running the tool use command line arguments like this:
 
-**java -jar utility.tpalv-1.0.0.jar -U=http://localhost:8080 -A=path-to-movia_approved_licenses1.txt**
+**java -jar utility.tpalv-1.0.0.jar -U=http://localhost:8080 -A=path-to-movia_approved_licenses.txt**
 
 Available configurations are:
 | Configuration | Description |
