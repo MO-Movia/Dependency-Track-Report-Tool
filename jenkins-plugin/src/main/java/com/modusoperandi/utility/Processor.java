@@ -41,12 +41,14 @@ public class Processor {
 		protected boolean isLatestVersion;
 		protected boolean isValidLicense;
 		protected boolean isCompliant;
+		protected boolean isCommercial;
 		protected int vulnerabilities;
 		
 		public LibAudit() {
 			isLatestVersion = false;
 			isValidLicense = false;
 			isCompliant = false;
+			isCommercial = false;
 		}
 	}
 
@@ -67,6 +69,12 @@ public class Processor {
 			if (0 == c) {
 				if (b.isCompliant != a.isCompliant) {
 					c = b.isCompliant ? -1 : 1;
+				}
+			}
+			
+			if (0 == c) {
+				if (b.isCommercial != a.isCommercial) {
+					c = b.isCommercial ? -1 : 1;
 				}
 			}
 
@@ -385,7 +393,9 @@ public class Processor {
 			// either it is valid (it is in either the white list, approved list, or translate list), or it is not
 			// Valid == Compliant ie "license info (valid or not)" column alone is enough.  Thus, I don’t see any reason for the compliant column
 			// license info (compliant or not)
-			this.auditReport += libAudit.isCompliant ? OK_TEXT : "Invalid License [" + libAudit.license + "]";
+			// when found a "commercial" text in the license, it shall be listed as "Note [<commercial_license_name>]" in the audit report and if any input files have any 
+			// "commercial" license specified, it shall be skipped for verifying the name with dependency track.
+			this.auditReport += libAudit.isCompliant ? OK_TEXT : ((libAudit.isCommercial ? "Note" : "Invalid") + " [" + libAudit.license + "]");
 			this.auditReport += SEP_DELIMITER;
 
 			// known vulnerabilities
@@ -572,9 +582,15 @@ public class Processor {
 				compliant = this.checkXLate(licName, license);
 			}
 			
+			if(compliant) {
+				String name = license[0];
+				libAudit.isCommercial = name.toLowerCase().contains("commercial");
+				libAudit.license = license[0];
+			}
+			
 			// I am curious. If I put in a white-list, and give you a license name for a module that is still not approved, what will happen?  
 			// My desire would be that it still shows invalid license, and shows the invalid license from the white-list input file.
-			if(compliant && !isLicenseNameValid(license[0])) {
+			if(compliant && !libAudit.isCommercial && !isLicenseNameValid(license[0])) {
 				libAudit.license = license[0];
 				compliant = false;
 			}
