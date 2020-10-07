@@ -1,8 +1,8 @@
 # Third Party Audit & License Validation Jenkins Plugin (TPALVU)
 
 ### Download Source
- - git clone https://gitlab.com/firmusoft/mo-lvu.git  
- - cd *mo-lvu/jenkins-plugin*
+ - git clone https://github.com/MO-Movia/Dependency-Track-Report-Tool.git  
+ - cd *Dependency-Track-Report-Tool/jenkins-plugin*
  
 ## Prerequisite
  - Java 8 u162 (or higher), but not Java 9+
