@@ -2,6 +2,7 @@ package com.modusoperandi.jenkins.plugins;
 
 import hudson.Launcher;
 import hudson.Extension;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.model.AbstractProject;
@@ -9,14 +10,20 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.DataBoundSetter;
+
+import org.jenkinsci.Symbol;
+
+import org.apache.commons.lang.StringUtils;
+
+import jenkins.tasks.SimpleBuildStep;
 
 import javax.servlet.ServletException;
+
 import java.io.IOException;
-import jenkins.tasks.SimpleBuildStep;
-import org.jenkinsci.Symbol;
-import org.kohsuke.stapler.DataBoundSetter;
 import java.util.ArrayList;
 
 import com.modusoperandi.utility.ThirdPartyAuditNLicenseValidation;
@@ -145,10 +152,51 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-		ThirdPartyAuditNLicenseValidation tpalvu = new ThirdPartyAuditNLicenseValidation(new ConsoleLogger(listener));
+		ConsoleLogger cLogger = new ConsoleLogger(listener);
+		ThirdPartyAuditNLicenseValidation tpalvu = new ThirdPartyAuditNLicenseValidation(cLogger);
+		
+		// Parse and process config
+		EnvVars envVars = null;
+		StringBuilder parsedPath = new StringBuilder("");
+		String parsedAppovedLic = appovedLic;
+		String parsedLicXlate = licXlate;
+		String parsedWhiteList = whiteList;
+		String parsedAuditRpt = auditRpt;
+		String parsedLicList = licList;
+		String parsedLicText = licText;
+		
+		envVars = run.getEnvironment(listener);
+		
+        if (null != envVars) {
+				
+			if(PluginUtil.parseFilePath(appovedLic, envVars, parsedPath)) {
+				parsedAppovedLic = parsedPath.toString();
+				cLogger.log("ParsedAppovedLicPath: " + parsedAppovedLic);
+			}
+			if(PluginUtil.parseFilePath(licXlate, envVars, parsedPath)) {
+				parsedLicXlate = parsedPath.toString();
+				cLogger.log("ParsedLicXlatePath: " + parsedLicXlate);
+			}
+			if(PluginUtil.parseFilePath(whiteList, envVars, parsedPath)) {
+				parsedWhiteList = parsedPath.toString();
+				cLogger.log("ParsedWhiteListPath: " + parsedWhiteList);
+			}
+			if(PluginUtil.parseFilePath(auditRpt, envVars, parsedPath)) {
+				parsedAuditRpt = parsedPath.toString();
+				cLogger.log("ParsedAuditRptPath: " + parsedAuditRpt);
+			}
+			if(PluginUtil.parseFilePath(licList, envVars, parsedPath)) {
+				parsedLicList = parsedPath.toString();
+				cLogger.log("ParsedLicListPath: " + parsedLicList);
+			}
+			if(PluginUtil.parseFilePath(licText, envVars, parsedPath)) {
+				parsedLicText = parsedPath.toString();
+				cLogger.log("ParsedLicTextPath: " + parsedLicText);
+			}
+        }
 		
 		if(null != tpalvu) {
-			tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, appovedLic, licXlate, whiteList, auditRpt, licList, licText);
+			tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedWhiteList, parsedAuditRpt, parsedLicList, parsedLicText);
 		}
     }
 

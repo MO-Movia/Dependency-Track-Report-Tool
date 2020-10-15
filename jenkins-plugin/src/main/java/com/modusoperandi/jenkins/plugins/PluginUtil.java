@@ -1,9 +1,13 @@
 package com.modusoperandi.jenkins.plugins;
 
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.util.FormValidation;
+
 import org.apache.commons.lang.StringUtils;
+
 import org.kohsuke.stapler.QueryParameter;
+
 import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -12,6 +16,9 @@ import java.net.URL;
 public class PluginUtil implements Serializable {
 
     private static final long serialVersionUID = 5780698407191725723L;
+	
+	private static final String ENV_VAR_BEGIN = "${";
+	private static final String ENV_VAR_END = "}";
 
     private PluginUtil() { }
 
@@ -57,4 +64,24 @@ public class PluginUtil implements Serializable {
         }
         return baseUrl;
     }
+	
+	static boolean parseFilePath(String path, EnvVars envVars, StringBuilder parsedPath) {
+		boolean success = true;
+		String newPath = path;
+		String[] variables = StringUtils.substringsBetween(path, ENV_VAR_BEGIN, ENV_VAR_END);
+		
+		if(null != variables) {
+			for (String variable : variables) {
+				String rep = ENV_VAR_BEGIN + variable + ENV_VAR_END;
+				String value = envVars.get(variable, rep);
+				success &= !value.equals(rep);
+				newPath = newPath.replace(rep, value);
+			}
+		}
+		
+		parsedPath.delete(0, parsedPath.length());
+        parsedPath.append(newPath);
+
+		return success;
+	}
 }
