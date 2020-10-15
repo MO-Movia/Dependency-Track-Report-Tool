@@ -50,13 +50,19 @@ In order to overrride the configurations in the config.properties to running the
 Available configurations are:
 | Configuration | Description |
 |--|--|
-| -U | Dependency Track Rest API URL |
-| -K | Dependency Track Rest API Key |
-| -I | Dependency Track Project ID|
-| -A | File path of the Approved Licenses  |
-| -X | File path of the License Translations  |
-| -W | File path of the White list |
-| -R | File path of the Audit report csv |
-| -L | File path of the unique License list  |
-| -T | File path of the License Text|
-| -? | print help message  |
+| Dependency Track URL | Dependency Track Rest API URL |
+| Dependency Track API Key | Dependency Track Rest API Key |
+| Dependency Track Project ID | Dependency Track Project ID|
+| Approved License File | File path of the Approved Licenses  |
+| License Translation File | File path of the License Translations  |
+| White List File | File path of the White list |
+| Audit Report | File path of the Audit report csv |
+| License List | File path of the unique License list  |
+| License Text | File path of the License Text|
+
+> File path can include Jenkins' environment variables (global, project or node specific). 
+> Environment variables MUST be in this format:  
+> &nbsp;&nbsp;&nbsp;&nbsp;&#36;&#123;*<ENV_VARIABLE>*&#125;
+> Multiple variables can be combined like this:  
+> &nbsp;&nbsp;&nbsp;&nbsp;&#36;&#123;*<ENV_VARIABLE_0>*&#125;&#36;&#123;*<ENV_VARIABLE_1>*&#125;
+> If just file names are provided, it shall be picked or stored from Jenkins' root directory. 
