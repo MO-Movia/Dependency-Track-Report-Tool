@@ -735,10 +735,18 @@ public class Processor {
 	}
 	
 	protected void generateOutputFile(String fileName, String content) {
-		try {
+		try {			
 			File file = new File(fileName);
-			file.getParentFile().mkdirs();
+			// Get the Parent of the given file.
+			File parentFile = file.getParentFile(); 
+
+			// check for parent file found
+			if (null != parentFile) {
+				parentFile.mkdirs();
+			}
 			file.createNewFile();
+			this.logger.log( "Generated " + file.getAbsolutePath());
+
 			FileOutputStream fileStream = new FileOutputStream(file, false);
 			fileStream.write(content.getBytes(StandardCharsets.UTF_8));
 			fileStream.close();
