@@ -1,3 +1,4 @@
+
 # Third Party Audit & License Validation Utility (TPALVU)
 
 ### Download Source
@@ -65,4 +66,19 @@ Available configurations are:
 > &nbsp;&nbsp;&nbsp;&nbsp;&#36;&#123;*<ENV_VARIABLE>*&#125;
 > Multiple variables can be combined like this:  
 > &nbsp;&nbsp;&nbsp;&nbsp;&#36;&#123;*<ENV_VARIABLE_0>*&#125;&#36;&#123;*<ENV_VARIABLE_1>*&#125;
-> If just file names are provided, it shall be picked or stored from Jenkins' root directory. 
+> If just file names are provided, it shall be picked or stored from Jenkins' root directory.
+
+The relevant configuration can set in Jenkins for output files are as follows:
+Assumptions:
+Jenkins Project Name : MOVIA-CORE
+JENKINS_HOME : C:\Users\User_Name\.jenkins
+BASE : C:\Program Files\Jenkins  ( you can find this path in Manage Jenkins > System Information > Environment Variables > BASE )
+OS : Windows 8
+Plugin installed via Manage Jenkins > Manage Plugin > Upload Plugin
+Project configured with **Add build step** - " Third Party Audit & License Validity".
+Project Build Number is : 12
+| Output Configuration | File Name| Output File Path
+|--|--|--|
+| Audit Report | movia_audit_out.csv |C:\Program Files\Jenkins\movia_audit_out.csv
+| License List | ${WORKSPACE}\movia_license_list.csv |C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\movia_license_list.csv
+| License Text | ${WORKSPACE}\ ${BUILD_NUMBER}-movia_license_text.txt| C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\ 12-movia_license_text.txt
