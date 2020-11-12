@@ -86,4 +86,4 @@ A couple of usage of Input/Output and their expected/resultant paths:
 | Audit Report | ${WORKSPACE}\${BUILD_NUMBER}-movia_audit_out.csv| C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\12-movia_audit_out.csv
 | Audit Report | ..\movia_audit_out.csv| C:\Program Files\movia_audit_out.csv
 
-NOTE: File generated path shall be in the console logs.
+NOTE: Generated file path shall be in the console logs.
