@@ -48,37 +48,21 @@ In order to overrride the configurations in the config.properties to running the
 
 **java -jar utility.tpalv-1.0.0.jar -U=http://localhost:8080 -A=path-to-movia_approved_licenses.txt**
 
+
 Available configurations are:
 | Configuration | Description |
 |--|--|
-| Dependency Track URL | Dependency Track Rest API URL |
-| Dependency Track API Key | Dependency Track Rest API Key |
-| Dependency Track Project ID | Dependency Track Project ID|
-| Approved License File | File path of the Approved Licenses  |
-| License Translation File | File path of the License Translations  |
-| White List File | File path of the White list |
-| Audit Report | File path of the Audit report csv |
-| License List | File path of the unique License list  |
-| License Text | File path of the License Text|
+| -U | Dependency Track Rest API URL |
+| -K | Dependency Track Rest API Key |
+| -I | Dependency Track Project ID|
+| -A | File path of the Approved Licenses  |
+| -X | File path of the License Translations  |
+| -W | File path of the White list |
+| -R | File path of the Audit report csv |
+| -L | File path of the unique License list  |
+| -T | File path of the License Text|
+| -? | print help message  |
 
-> File path can include Jenkins' environment variables (global, project or node specific). 
-> Environment variables MUST be in this format:  
-> &nbsp;&nbsp;&nbsp;&nbsp;&#36;&#123;*<ENV_VARIABLE>*&#125;
-> Multiple variables can be combined like this:  
-> &nbsp;&nbsp;&nbsp;&nbsp;&#36;&#123;*<ENV_VARIABLE_0>*&#125;&#36;&#123;*<ENV_VARIABLE_1>*&#125;
-> If just file names are provided, it shall be picked or stored from Jenkins' root directory.
+ 
 
-The relevant configuration can set in Jenkins for output files are as follows:
-Assumptions:
-Jenkins Project Name : MOVIA-CORE
-JENKINS_HOME : C:\Users\User_Name\.jenkins
-BASE : C:\Program Files\Jenkins  ( you can find this path in Manage Jenkins > System Information > Environment Variables > BASE )
-OS : Windows 8
-Plugin installed via Manage Jenkins > Manage Plugin > Upload Plugin
-Project configured with **Add build step** - " Third Party Audit & License Validity".
-Project Build Number is : 12
-| Output Configuration | File Name| Output File Path
-|--|--|--|
-| Audit Report | movia_audit_out.csv |C:\Program Files\Jenkins\movia_audit_out.csv
-| License List | ${WORKSPACE}\movia_license_list.csv |C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\movia_license_list.csv
-| License Text | ${WORKSPACE}\ ${BUILD_NUMBER}-movia_license_text.txt| C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\ 12-movia_license_text.txt
+ 
