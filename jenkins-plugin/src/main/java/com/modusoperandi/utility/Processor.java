@@ -745,7 +745,7 @@ public class Processor {
 				parentFile.mkdirs();
 			}
 			file.createNewFile();
-			this.logger.log( "Generated " + file.getAbsolutePath());
+			this.logger.log( "Generated " + file.getCanonicalPath());
 
 			FileOutputStream fileStream = new FileOutputStream(file, false);
 			fileStream.write(content.getBytes(StandardCharsets.UTF_8));

@@ -64,4 +64,27 @@ From the cloned folder run
 | License List |File path of the *movia_license_list.csv* in the *outputs*  folder   |
 | License Text |File path of the *movia_license_text.txt* in the *outputs*  folder|
 
-Note : Expect the parent folder only for the outputs. No need to create movia_audit_out.csv, movia_license_list.csv, movia_license_text.txt files.
+The relevant input-output configuration can set in Jenkins for Build is as follows:
+
+Assumptions:
+Jenkins Project Name : MOVIA-CORE
+JENKINS_HOME : C:\Users\User_Name\.jenkins
+BASE : C:\Program Files\Jenkins  ( you can find this path in Manage Jenkins > System Information > Environment Variables > BASE )
+OS : Windows 8
+Plugin installed via Manage Jenkins > Manage Plugin > Upload Plugin
+Project configured with **Add build step** - " Third Party Audit & License Validity".
+Project Build Number is : 12
+
+ **A couple of usage of Input/Output and their expected/resultant paths:**
+ 
+| Input/Output Configuration | File Name| Input/Output File Path
+|--|--|--|
+| Approved License File | ${WORKSPACE}\inputs\movia_approved_licenses.txt |C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\inputs\movia_approved_licenses.txt
+| Approved License File |  |  If empty, shall be using the (default) value from the config file.
+| Approved License File | ..\movia_approved_licenses.txt| C:\Program Files\movia_approved_licenses.txt
+| Audit Report | movia_audit_out.csv |C:\Program Files\Jenkins\movia_audit_out.csv
+| Audit Report | ${WORKSPACE}\movia_audit_out.csv |C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\movia_audit_out.csv
+| Audit Report | ${WORKSPACE}\ ${BUILD_NUMBER}-movia_audit_out.csv| C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\ 12-movia_audit_out.csv
+| Audit Report | ..\movia_audit_out.csv| C:\Program Files\movia_audit_out.csv
+
+Note : Expect the parent folder only for the outputs. No need to create movia_audit_out.csv, movia_license_list.csv, movia_license_text.txt files. 
