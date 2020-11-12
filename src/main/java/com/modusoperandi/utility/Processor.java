@@ -28,7 +28,6 @@ import org.spdx.rdfparser.license.ConjunctiveLicenseSet;
 import org.spdx.rdfparser.license.SpdxListedLicense;
 import org.spdx.rdfparser.license.ExtractedLicenseInfo;
 import org.spdx.rdfparser.license.WithExceptionOperator;
-import com.modusoperandi.jenkins.plugins.ConsoleLogger;
 
 public class Processor {
 
