@@ -23,9 +23,9 @@
 From the cloned folder run
 *mvn clean compile package -DskipTests*
 
- - *plugins.tpalv.hpi* shall be generated in the *target* folder.
+ - *modusoperandi-tpalv.hpi* shall be generated in the *target* folder.
  
- **To upload *plugins.tpalv.hpi* to Jenkins follow the below steps:**
+ **To upload *modusoperandi-tpalv.hpi* to Jenkins follow the below steps:**
 
 ## To install and run Jenkins :
 
@@ -41,7 +41,7 @@ From the cloned folder run
 8. Click to *Jenkins* in the dashboard and select the "*Manage Jenkins*" menu from the left panel.
 9. Select the "*Manage plugins*" from the *System configuration*.
 10. Click on "*Advanced*" tab and from the *Upload Plugin* section select  "Choose file" .
-11. Here select the *plugins.tpalv.hpi* file from the *target folder* and click the *upload* button.
+11. Here select the *modusoperandi-tpalv.hpi* file from the *target folder* and click the *upload* button.
 12. After installed the file restart the jenkins using the checkbox "*Restart Jenkins when installation is complete and no jobs are running*" or directly run the url  *http://localhost:8080/restart/*
 13. After login, select the project from the dashboard , and click "*Configure*" menu from the left panel.
 14. On the "*Build*" tab, click on "*Add build step*" drop down and select "*Third Party Audit & License Validity*" from the drop down.
@@ -52,17 +52,17 @@ From the cloned folder run
 
 ## Parameters
 
-| Parameter | Description|
-|--|--|
-| Dependency Track URL |URL of the dependency track  |
-| Dependency Track API Key |API Key from the dependency track  |
-| Dependency Track Project ID |Project ID of the project created in the dependency track|
-| Approved License File |File path of the *movia_approved_licenses.txt* in the *inputs*  folder |
-| License Translation File |File path of the *movia_lic_xlate_list.txt* in the *inputs*  folder  |
-| White List File |File path of the *movia_white_list.txt* in the *inputs*  folder  |
-| Audit Report |File path of the *movia_audit_out.csv* in the *outputs*  folder   |
-| License List |File path of the *movia_license_list.csv* in the *outputs*  folder   |
-| License Text |File path of the *movia_license_text.txt* in the *outputs*  folder|
+| Parameter | Description | Default Value |
+|--|--|--|
+| Dependency Track URL |URL of the dependency track  | http://localhost:8080 |
+| Dependency Track API Key |API Key from the dependency track  | LPfV2H90mbapj6TWLUV6tgu1PXYThFDi |
+| Dependency Track Project ID |Project ID of the project created in the dependency track| 588d64a8-a208-4d5f-b3f0-1288acd5ee5a |
+| Approved License File |File path of the *movia_approved_licenses.txt* in the *inputs*  folder | ${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt |
+| License Translation File |File path of the *movia_lic_xlate_list.txt* in the *inputs*  folder  | ${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt |
+| White List File |File path of the *movia_white_list.txt* in the *inputs*  folder  | ${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_white_list.txt |
+| Audit Report |File path of the *movia_audit_out.csv* in the *outputs*  folder   | ${WORKSPACE}\\outputs\\movia_audit_out.csv |
+| License List |File path of the *movia_license_list.csv* in the *outputs*  folder   | ${WORKSPACE}\\outputs\\movia_license_list.csv |
+| License Text |File path of the *movia_license_text.txt* in the *outputs*  folder| ${WORKSPACE}\\outputs\\movia_license_text.txt |
 
 <u>Input-Output Configuration Hints:<u>
 <u>Assumptions:</u>
