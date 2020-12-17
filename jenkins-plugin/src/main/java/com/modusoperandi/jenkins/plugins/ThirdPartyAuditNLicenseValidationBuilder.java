@@ -15,6 +15,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 import org.jenkinsci.Symbol;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,26 +35,26 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     /**
 	 * Dependency-Track API URL
 	 */
-	private String restAPILoc;
+	private String restAPILoc = DescriptorImpl.defaultRestAPILoc;
 	
 	/**
 	 * Dependency-Track API KEY
 	 */
-	private String restAPIKey;
+	private String restAPIKey = DescriptorImpl.defaultRestAPIKey;
 	
-	private String restAPIPID;
+	private String restAPIPID = DescriptorImpl.defaultRestAPIPID;
 
-	private String licXlate;
+	private String licXlate = DescriptorImpl.defaultLicXlate;
 
-	private String appovedLic;
+	private String appovedLic = DescriptorImpl.defaultAppovedLic;
 
-	private String whiteList;
+	private String whiteList = DescriptorImpl.defaultWhiteList;
 
-	private String auditRpt;
+	private String auditRpt = DescriptorImpl.defaultAuditRpt;
 
-	private String licList;
+	private String licList = DescriptorImpl.defaultLicList;
 
-	private String licText;	
+	private String licText = DescriptorImpl.defaultLicText;
 
     @DataBoundConstructor
     public ThirdPartyAuditNLicenseValidationBuilder (final String restAPILoc, final String restAPIKey, final String restAPIPID, 
@@ -70,82 +72,91 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     }
 	
 	@DataBoundSetter
-    public void setRestAPILoc(String restAPILoc) {
+    public void setRestAPILoc(@NonNull String restAPILoc) {
         this.restAPILoc = restAPILoc;
     }
 
+    @NonNull
     public String getRestAPILoc() {
         return restAPILoc;
     }
 
     @DataBoundSetter
-    public void setRestAPIKey(String restAPIKey) {
+    public void setRestAPIKey(@NonNull String restAPIKey) {
         this.restAPIKey = restAPIKey;
     }
     
+    @NonNull	
     public String getRestAPIKey() {
         return restAPIKey;
     }
 
     @DataBoundSetter
-    public void setRestAPIPID(String restAPIPID) {
+    public void setRestAPIPID(@NonNull String restAPIPID) {
         this.restAPIPID = restAPIPID;
     }
     
+    @NonNull
     public String getRestAPIPID() {
         return restAPIPID;
     }
 
     @DataBoundSetter
-    public void setAppovedLic(String appovedLic) {
+    public void setAppovedLic(@NonNull String appovedLic) {
         this.appovedLic = appovedLic;
     }
     
+    @NonNull
     public String getAppovedLic() {
         return appovedLic;
     }
 
     @DataBoundSetter
-    public void setLicXlate(String licXlate) {
+    public void setLicXlate(@NonNull String licXlate) {
         this.licXlate = licXlate;
     }
     
+    @NonNull
     public String getLicXlate() {
         return licXlate;
     }
 
     @DataBoundSetter
-    public void setWhiteList(String whiteList) {
+    public void setWhiteList(@NonNull String whiteList) {
         this.whiteList = whiteList;
     }
     
+    @NonNull
     public String getWhiteList() {
         return whiteList;
     }
 
     @DataBoundSetter
-    public void setAuditRpt(String auditRpt) {
+    public void setAuditRpt(@NonNull String auditRpt) {
         this.auditRpt = auditRpt;
     }
     
+    @NonNull
     public String getAuditRpt() {
         return auditRpt;
     }
 
     @DataBoundSetter
-    public void setLicList(String licList) {
+    public void setLicList(@NonNull String licList) {
         this.licList = licList;
     }
     
+    @NonNull
     public String getLicList() {
         return licList;
     }
 
     @DataBoundSetter
-    public void setLicText(String licText) {
+    public void setLicText(@NonNull String licText) {
         this.licText = licText;
     }
     
+    @NonNull
     public String getLicText() {
         return licText;
     }
@@ -200,9 +211,19 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 		}
     }
 
-    @Symbol("greet")
+    @Symbol("tpalv")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+		
+		public static final String defaultRestAPILoc = "http://localhost:8080";
+		public static final String defaultRestAPIKey = "LPfV2H90mbapj6TWLUV6tgu1PXYThFDi";
+		public static final String defaultRestAPIPID = "588d64a8-a208-4d5f-b3f0-1288acd5ee5a";
+		public static final String defaultLicXlate = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt";
+		public static final String defaultAppovedLic = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt";
+		public static final String defaultWhiteList = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_white_list.txt";
+		public static final String defaultAuditRpt = "${WORKSPACE}\\outputs\\movia_audit_out.csv";
+		public static final String defaultLicList = "${WORKSPACE}\\outputs\\movia_license_list.csv";
+		public static final String defaultLicText = "${WORKSPACE}\\outputs\\movia_license_text.txt";
 
         public FormValidation doCheckRestAPILoc(@QueryParameter String value)
                 throws IOException, ServletException {

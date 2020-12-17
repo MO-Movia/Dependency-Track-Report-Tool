@@ -1,30 +1,30 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <f:entry title="${%Dependency Track URL}" field="restAPILoc">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultRestAPILoc}"/>
     </f:entry>
     <f:entry title="${%Dependency Track API Key}" field="restAPIKey">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultRestAPIKey}"/>
     </f:entry>
     <f:entry title="${%Dependency Track Project ID}" field="restAPIPID">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultRestAPIPID}"/>
     </f:entry>
     <f:entry title="${%Approved License File}" field="appovedLic">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultAppovedLic}"/>
     </f:entry>
     <f:entry title="${%License Translation File}" field="licXlate">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultLicXlate}"/>
     </f:entry>
     <f:entry title="${%White List File}" field="whiteList">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultWhiteList}"/>
     </f:entry>
      <f:entry title="${%Audit Report}" field="auditRpt">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultAuditRpt}"/>
     </f:entry>
     <f:entry title="${%License List}" field="licList">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultLicList}"/>
     </f:entry>
     <f:entry title="${%License Text}" field="licText">
-        <f:textbox />
+        <f:textbox default="${descriptor.defaultLicText}"/>
     </f:entry>
 </j:jelly>

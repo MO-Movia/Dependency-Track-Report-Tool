@@ -9,7 +9,7 @@
       <version>3.43</version>
    </parent>
    <groupId>com.modusoperandi.jenkins</groupId>
-   <artifactId>plugins.tpalv</artifactId>
+   <artifactId>modusoperandi-tpalv</artifactId>
    <version>1.0</version>
    <packaging>hpi</packaging>
    <name>Third Party Audit and License Validation Plugin</name>
