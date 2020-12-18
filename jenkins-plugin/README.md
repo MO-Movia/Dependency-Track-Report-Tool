@@ -69,8 +69,8 @@ From the cloned folder run
  - **Dependency Track URL**
  - **Dependency Track API Key**
  - **Dependency Track Project ID**
-<u
->Input-Output Configuration Hints:<u>
+ 
+<u>Input-Output Configuration Hints:<u>
 <u>Assumptions:</u>
  - Jenkins Project Name: MOVIA-CORE 
  - JENKINS_HOME:  C:\Users\User_Name\.jenkins 
