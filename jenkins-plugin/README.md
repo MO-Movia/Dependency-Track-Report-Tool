@@ -70,6 +70,8 @@ From the cloned folder run
  - **Dependency Track API Key**
  - **Dependency Track Project ID**
  
+ **Make sure the running user has enough read permission for the input files.**
+ 
 <u>Input-Output Configuration Hints:<u>
 <u>Assumptions:</u>
  - Jenkins Project Name: MOVIA-CORE 
