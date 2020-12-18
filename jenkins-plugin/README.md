@@ -40,14 +40,15 @@ From the cloned folder run
 7. Click on *Save* button to show the created job in the dashboard.
 8. Click to *Jenkins* in the dashboard and select the "*Manage Jenkins*" menu from the left panel.
 9. Select the "*Manage plugins*" from the *System configuration*.
-10. Click on "*Advanced*" tab and from the *Upload Plugin* section select  "Choose file" .
-11. Here select the *modusoperandi-tpalv.hpi* file from the *target folder* and click the *upload* button.
-12. After installed the file restart the jenkins using the checkbox "*Restart Jenkins when installation is complete and no jobs are running*" or directly run the url  *http://localhost:8080/restart/*
-13. After login, select the project from the dashboard , and click "*Configure*" menu from the left panel.
-14. On the "*Build*" tab, click on "*Add build step*" drop down and select "*Third Party Audit & License Validity*" from the drop down.
-15. Fill all the properties in the shown fields and click on *Save* or *Apply* button.
-16. Click the "*Build Now*" menu from the left panel to audit the result in the  output folder.
-17. From the *Build History*, click on the latest build, and select "*Console Output*" menu from the left panel to show the console log.  
+10. If the *Third Party Audit and License Validation Plugin* already uploaded, then uninstall it , for that Click on "*Installed*" tab and uninstall the *Third Party Audit and License Validation Plugin* from the list. 
+11. Click on "*Advanced*" tab and from the *Upload Plugin* section select  "Choose file" .
+12. Here select the *modusoperandi-tpalv.hpi* file from the *target folder* and click the *upload* button.
+13. After installed the file restart the jenkins using the checkbox "*Restart Jenkins when installation is complete and no jobs are running*" or directly run the url  *http://localhost:8080/restart/*
+14. After login, select the project from the dashboard , and click "*Configure*" menu from the left panel.
+15. On the "*Build*" tab, click on "*Add build step*" drop down and select "*Third Party Audit & License Validity*" from the drop down.
+16. Fill all the properties in the shown fields and click on *Save* or *Apply* button.
+17. Click the "*Build Now*" menu from the left panel to audit the result in the  output folder.
+18. From the *Build History*, click on the latest build, and select "*Console Output*" menu from the left panel to show the console log.  
 
 
 ## Parameters
@@ -64,7 +65,12 @@ From the cloned folder run
 | License List |File path of the *movia_license_list.csv* in the *outputs*  folder   | ${WORKSPACE}\\outputs\\movia_license_list.csv |
 | License Text |File path of the *movia_license_text.txt* in the *outputs*  folder| ${WORKSPACE}\\outputs\\movia_license_text.txt |
 
-<u>Input-Output Configuration Hints:<u>
+**NOTE: Make sure to replace the below default values with a valid one:**
+ - **Dependency Track URL**
+ - **Dependency Track API Key**
+ - **Dependency Track Project ID**
+<u
+>Input-Output Configuration Hints:<u>
 <u>Assumptions:</u>
  - Jenkins Project Name: MOVIA-CORE 
  - JENKINS_HOME:  C:\Users\User_Name\.jenkins 
