@@ -218,8 +218,8 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 		public static final String defaultRestAPILoc = "http://localhost:8080";
 		public static final String defaultRestAPIKey = "LPfV2H90mbapj6TWLUV6tgu1PXYThFDi";
 		public static final String defaultRestAPIPID = "588d64a8-a208-4d5f-b3f0-1288acd5ee5a";
-		public static final String defaultLicXlate = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt";
-		public static final String defaultAppovedLic = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt";
+		public static final String defaultAppovedLic = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt";
+		public static final String defaultLicXlate = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt";
 		public static final String defaultWhiteList = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_white_list.txt";
 		public static final String defaultAuditRpt = "${WORKSPACE}\\outputs\\movia_audit_out.csv";
 		public static final String defaultLicList = "${WORKSPACE}\\outputs\\movia_license_list.csv";
