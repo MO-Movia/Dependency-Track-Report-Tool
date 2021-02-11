@@ -567,12 +567,14 @@ public class Processor {
 
 	private boolean isCompliant(final LibAudit libAudit, final String libName, final String licName, final String[] license) {
 		boolean compliant = false;
+		boolean isWL = false;
 		
 		try {
 			compliant = this.isApproved(licName);
 		
 			if(!compliant) {
-				compliant = this.checkWL(libName, license);			
+				compliant = this.checkWL(libName, license);
+				isWL = compliant;
 			} else {
 				license[0] = licName;
 			}
@@ -582,14 +584,23 @@ public class Processor {
 			}
 			
 			if(compliant) {
-				String name = license[0];
-				libAudit.isCommercial = name.toLowerCase().contains("commercial");
+				String name = license[0].toLowerCase();
+				final String COMMERCIAL = "commercial";
+				final String NON = "non";
+
+				if(name.contains(COMMERCIAL)) {
+					 int iIndex = name.indexOf(COMMERCIAL) - 4;
+					 // check if there is any "non" prefix with COMMERCIAL.
+					 if(0 <= iIndex) {
+						 libAudit.isCommercial = !name.substring(iIndex, iIndex+3).equals(NON);
+					 }
+				}
 				libAudit.license = license[0];
 			}
 			
 			// I am curious. If I put in a white-list, and give you a license name for a module that is still not approved, what will happen?  
 			// My desire would be that it still shows invalid license, and shows the invalid license from the white-list input file.
-			if(compliant && !libAudit.isCommercial && !isLicenseNameValid(license[0])) {
+			if(isWL && !libAudit.isCommercial && !isLicenseNameValid(license[0])) {
 				libAudit.license = license[0];
 				compliant = false;
 			}
