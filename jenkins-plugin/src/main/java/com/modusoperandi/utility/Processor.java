@@ -38,6 +38,7 @@ public class Processor {
 		protected String usedVersion;
 		protected String latestVersion;
 		protected String license;
+		protected String inValidXlateLicense;
 		protected boolean isLatestVersion;
 		protected boolean isValidLicense;
 		protected boolean isCompliant;
@@ -395,7 +396,10 @@ public class Processor {
 			// license info (compliant or not)
 			// when found a "commercial" text in the license, it shall be listed as "Note [<commercial_license_name>]" in the audit report and if any input files have any 
 			// "commercial" license specified, it shall be skipped for verifying the name with dependency track.
-			this.auditReport += libAudit.isCompliant ? OK_TEXT : ((libAudit.isCommercial ? "Note" : "Invalid") + " [" + libAudit.license + "]");
+			// I think what I was trying to say was that if you did a translation and you didn’t find the translated license in the white-list, I would 
+			// like an indication that there was a translation, and would like both the original license name and the translated license name in the log 
+			// file (being that neither is valid).			
+			this.auditReport += libAudit.isCompliant ? OK_TEXT : ((libAudit.isCommercial ? "Note" : "Invalid") + " [" + libAudit.license + "]" + ((null != libAudit.inValidXlateLicense) ? " [Invalid Translated License]: " + libAudit.inValidXlateLicense : ""));
 			this.auditReport += SEP_DELIMITER;
 
 			// known vulnerabilities
@@ -568,20 +572,27 @@ public class Processor {
 
 	private boolean isCompliant(final LibAudit libAudit, final String libName, final String licName, final String[] license) {
 		boolean compliant = false;
-		boolean isWL = false;
 		
 		try {
 			compliant = this.isApproved(licName);
 		
 			if(!compliant) {
 				compliant = this.checkWL(libName, license);
-				isWL = compliant;
 			} else {
 				license[0] = licName;
 			}
 			
 			if(!compliant) {
 				compliant = this.checkXLate(licName, license);
+				// No external checks needed. If you find a license that is not in the white-list, you check to see if there is potentially a translate for 
+				// it. If so, you translate it, and then again check to see if the translated license is in the white-list. If it is, it is valid. If not, 
+				// the license name goes into the log file as an invalid license.
+				if(compliant) {
+					compliant = this.checkWL(libName, license);
+					if(!compliant) {
+						libAudit.inValidXlateLicense = license[0];
+					}
+				}
 			}
 			
 			if(compliant) {
@@ -593,17 +604,10 @@ public class Processor {
 					 int iIndex = name.indexOf(COMMERCIAL) - 4;
 					 // check if there is any "non" prefix with COMMERCIAL.
 					 if(0 <= iIndex) {
-						 libAudit.isCommercial = !name.substring(iIndex, iIndex+3).equals(NON);
+						 libAudit.isCommercial = !name.substring(iIndex, iIndex + 3).equals(NON);
 					 }
 				}
 				libAudit.license = license[0];
-			}
-			
-			// I am curious. If I put in a white-list, and give you a license name for a module that is still not approved, what will happen?  
-			// My desire would be that it still shows invalid license, and shows the invalid license from the white-list input file.
-			if(isWL && !libAudit.isCommercial && !isLicenseNameValid(license[0])) {
-				libAudit.license = license[0];
-				compliant = false;
 			}
 		} catch (Exception ex) {
 			this.logger.log( "isCompliant error " + ex.getMessage());
