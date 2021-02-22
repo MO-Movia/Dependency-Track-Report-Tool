@@ -398,7 +398,7 @@ public class Processor {
 			// I think what I was trying to say was that if you did a translation and you didn’t find the translated license in the white-list, I would 
 			// like an indication that there was a translation, and would like both the original license name and the translated license name in the log 
 			// file (being that neither is valid).			
-			this.auditReport += libAudit.isCompliant ? OK_TEXT : ((libAudit.isCommercial ? "Note" : "Invalid") + " [" + libAudit.license + "]" + ((null != libAudit.inValidXlateLicense) ? " Invalid Translated License [" + libAudit.inValidXlateLicense : "]"));
+			this.auditReport += libAudit.isCompliant ? OK_TEXT : ((libAudit.isCommercial ? "Note" : "Invalid") + " [" + libAudit.license + "]" + ((null != libAudit.inValidXlateLicense) ? " Invalid Translated License [" + libAudit.inValidXlateLicense + "]" : ""));
 			this.auditReport += SEP_DELIMITER;
 
 			// known vulnerabilities
