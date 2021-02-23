@@ -663,7 +663,7 @@ public class Processor {
 		return approved;
 	}
 	
-	private boolean checkWL(String libName, final String[] license) {
+	private boolean checkWL(final String libName, final String[] license) {
 		boolean found = false;
 		String licName = null;
 		
@@ -709,9 +709,9 @@ public class Processor {
 		return found;
 	}
 	
-	private boolean checkXLate(String licName, final String[] license) {
+	private boolean checkXLate(final String licName, final String[] license) {
 		boolean found = false;
-		String correctLName = "";
+		String correctLName = null;
 		
 		try {
 			// Check license translation file, see if the license text is in there, and then the appropriate license ID that will map to 
