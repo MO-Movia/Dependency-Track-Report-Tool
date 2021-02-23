@@ -50,7 +50,7 @@ public class ThirdPartyAuditNLicenseValidation
 	private static final String DEF_RESTAPIPID = "";
 	private static final String DEF_APPOVEDLIC = "movia_approved_licenses.txt";
 	private static final String DEF_LICXLATE = "movia_lic_xlate_list.txt";
-	private static final String DEF_WHITELIST = "movia_white_list.txt";
+	private static final String DEF_WHITELIST = "movia_no_lic_fix.txt";
 	private static final String DEF_AUDITRPT = "movia_audit_out.csv";			
 	private static final String DEF_LICLIST = "movia_license_list.csv";
 	private static final String DEF_LICTEXT = "movia_license_text.txt";

@@ -573,24 +573,34 @@ public class Processor {
 		boolean compliant = false;
 		
 		try {
-			compliant = this.isApproved(licName);
-		
-			if(!compliant) {
+			// To be clear, the no_lic_fix operation happens before we start checking for a valid license file.  Thus, it isn’t used in the 
+			// valid license checking, but is used at the beginning of the process to find if the license text is missing, and if so, 
+			// potentially get it from the no_lic_fix (Formally Known As white_list file), and then see if it is a valid license.  This 
+			// prevents a potential mistake of mis-typing the license in the no_lic_fix file, or, placing in the correct license name, but 
+			// that license name is still not approved for use (but easier to see the name that isn’t approved in the output audit file).
+			// No external checks needed. If you find a license name that is not in the Valid License File (VLF), you check to see if there 
+			// is potentially a translate name for it (in the Translate License File (TLF). If so, you translate it, and then again check 
+			// to see if the translated license name is in the VLF. If it is, it is valid. If not, both the original license name and the 
+			// translated license name goes into the log file as an invalid license..			
+			if(!licName) {
 				compliant = this.checkWL(libName, license);
 			} else {
-				license[0] = licName;
+				compliant = true;
 			}
 			
-			if(!compliant) {
-				compliant = this.checkXLate(licName, license);
-				// No external checks needed. If you find a license that is not in the white-list, you check to see if there is potentially a translate for 
-				// it. If so, you translate it, and then again check to see if the translated license is in the white-list. If it is, it is valid. If not, 
-				// the license name goes into the log file as an invalid license.
-				if(compliant) {
-					compliant = this.checkWL(libName, license);
-					if(!compliant) {
+			if(compliant) {
+				compliant = this.isApproved(license[0]);
+				
+				if(!compliant) {
+					compliant = this.checkXLate(license[0], license);
+					
+					if(compliant) {
+						compliant = this.isApproved(license[0]);
+					} else {
 						libAudit.inValidXlateLicense = license[0];
 					}
+				} else {
+					license[0] = licName;
 				}
 			}
 			
@@ -698,6 +708,7 @@ public class Processor {
 	
 	private boolean checkXLate(String licName, final String[] license) {
 		boolean found = false;
+		String correctLName = "";
 		
 		try {
 			// Check license translation file, see if the license text is in there, and then the appropriate license ID that will map to 
@@ -715,7 +726,10 @@ public class Processor {
 						int iLen = vars.length;
 						final String licenseName = (0 < iLen) ? vars[0] : "";
 						final String correctLicName = (1 < iLen) ? vars[1] : "";
-						this.whiteListMap.put(licenseName, correctLicName);
+						this.licXlateMap.put(licenseName, correctLicName);
+						if(licName == licenseName) {
+							correctLName = correctLicName;
+						}
 					}
 					// read next line
 					line = reader.readLine();
@@ -723,9 +737,8 @@ public class Processor {
 				reader.close();
 			}
 
-			String correctLicName = this.whiteListMap.get(licName);
-			if (null != correctLicName) {
-				license[0] = correctLicName; 
+			if (null != correctLName) {
+				license[0] = correctLName; 
 				// The Valid License column contains all the information we need about the license – 
 				// either it is valid (it is in either the white list, approved list, or translate list), or it is not
 				// Valid == Compliant ie "license info (valid or not)" column alone is enough.  Thus, I don’t see any reason for the compliant column
