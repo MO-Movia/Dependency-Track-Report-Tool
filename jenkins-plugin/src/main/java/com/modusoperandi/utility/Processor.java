@@ -597,8 +597,10 @@ public class Processor {
 					
 					if(compliant) {
 						compliant = this.isApproved(license[0]);
-					} else {
-						libAudit.inValidXlateLicense = license[0];
+						
+						if(!compliant) {
+							libAudit.inValidXlateLicense = license[0];
+						}
 					}
 				}
 			}
