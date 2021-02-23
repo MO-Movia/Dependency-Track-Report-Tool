@@ -32,7 +32,7 @@ public class ThirdPartyAuditNLicenseValidation
 
 	private String appovedLic;
 
-	private String whiteList;
+	private String noLicFix;
 
 	private String auditRpt;
 
@@ -50,7 +50,7 @@ public class ThirdPartyAuditNLicenseValidation
 	private static final String DEF_RESTAPIPID = "";
 	private static final String DEF_APPOVEDLIC = "movia_approved_licenses.txt";
 	private static final String DEF_LICXLATE = "movia_lic_xlate_list.txt";
-	private static final String DEF_WHITELIST = "movia_no_lic_fix.txt";
+	private static final String DEF_NOLICFIX = "movia_no_lic_fix.txt";
 	private static final String DEF_AUDITRPT = "movia_audit_out.csv";			
 	private static final String DEF_LICLIST = "movia_license_list.csv";
 	private static final String DEF_LICTEXT = "movia_license_text.txt";
@@ -64,7 +64,7 @@ public class ThirdPartyAuditNLicenseValidation
 	}
 	
 	public ThirdPartyAuditNLicenseValidation(final String restAPILoc, final String restAPIKey, final String restAPIPID, 
-											final String appovedLic, final String licXlate, final String whiteList, 
+											final String appovedLic, final String licXlate, final String noLicFix, 
 											final String auditRpt, final String licList, final String licText) {
 		initLogger();
 		setRestAPILoc(restAPILoc);
@@ -72,7 +72,7 @@ public class ThirdPartyAuditNLicenseValidation
 		setRestAPIPID(restAPIPID);
 		setAppovedLic(appovedLic);
 		setLicXlate(licXlate);
-		setWhiteList(whiteList);
+		setNoLicFix(noLicFix);
 		setAuditRpt(auditRpt);
 		setLicList(licList);
 		setLicText(licText);
@@ -114,8 +114,8 @@ public class ThirdPartyAuditNLicenseValidation
 		this.licXlate = (null == this.licXlate) ? licXlate : this.licXlate;
 	}
 	
-	private void setWhiteList(final String whiteList) {
-		this.whiteList = (null == this.whiteList) ? whiteList : this.whiteList;
+	private void setNoLicFix(final String noLicFix) {
+		this.noLicFix = (null == this.noLicFix) ? noLicFix : this.noLicFix;
 	}
 
 	private void setAuditRpt(final String auditRpt) {
@@ -154,8 +154,8 @@ public class ThirdPartyAuditNLicenseValidation
 							case 'X':
 								this.setLicXlate(arg.substring(3));
 								break;
-							case 'W':
-								this.setWhiteList(arg.substring(3));
+							case 'F':
+								this.setNoLicFix(arg.substring(3));
 								break;
 							case 'R':
 								this.setAuditRpt(arg.substring(3));
@@ -209,7 +209,7 @@ public class ThirdPartyAuditNLicenseValidation
 			
 			this.setLicXlate(props.getProperty("LIC_XLATE", DEF_LICXLATE));
 			
-			this.setWhiteList(props.getProperty("WHITELIST", DEF_WHITELIST));
+			this.setNoLicFix(props.getProperty("NOLICFIX", DEF_NOLICFIX));
 			
 			this.setAuditRpt(props.getProperty("AUDIT_RPT", DEF_AUDITRPT));
 			
@@ -233,7 +233,7 @@ public class ThirdPartyAuditNLicenseValidation
 		this.logger.log("\r\nREST_API_PID: " + this.restAPIPID);
 		this.logger.log("\r\nAPPROVED_LIC: " + this.appovedLic);
 		this.logger.log("\r\nLIC_XLATE: " + this.licXlate);			
-		this.logger.log("\r\nWHITELIST: " + this.whiteList);
+		this.logger.log("\r\nNOLICFIX: " + this.noLicFix);
 		this.logger.log("\r\nAUDIT_RPT: " + this.auditRpt);
 		this.logger.log("\r\nLICENSE_LIST: " + this.licList);			
 		this.logger.log("\r\nLICENSE_TEXT: " + this.licText);		
@@ -247,7 +247,7 @@ public class ThirdPartyAuditNLicenseValidation
 		this.setRestAPIPID(DEF_RESTAPIPID);
 		this.setAppovedLic(DEF_APPOVEDLIC);
 		this.setLicXlate(DEF_LICXLATE);
-		this.setWhiteList(DEF_WHITELIST);
+		this.setNoLicFix(DEF_NOLICFIX);
 		this.setAuditRpt(DEF_AUDITRPT);			
 		this.setLicList(DEF_LICLIST);
 		this.setLicText(DEF_LICTEXT);
@@ -257,7 +257,7 @@ public class ThirdPartyAuditNLicenseValidation
 		try {		
 			final ApiClient apiClient = new ApiClient(this.restAPILoc, this.restAPIKey, this.logger);
 			final String result = apiClient.getDependencies(this.restAPIPID);			
-			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.whiteList, apiClient);
+			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.noLicFix, apiClient);
 			processor.validateLibs(result);
 			processor.generateOutputFiles(this.auditRpt, this.licList, this.licText);
 			

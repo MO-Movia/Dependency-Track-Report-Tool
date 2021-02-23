@@ -33,7 +33,7 @@ public class ThirdPartyAuditNLicenseValidation
 
 	private String appovedLic;
 
-	private String whiteList;
+	private String noLicFix;
 
 	private String auditRpt;
 
@@ -51,14 +51,14 @@ public class ThirdPartyAuditNLicenseValidation
 	}
 	
 	public void initialize(final String restAPILoc, final String restAPIKey, final String restAPIPID, 
-						final String appovedLic, final String licXlate, final String whiteList, 
+						final String appovedLic, final String licXlate, final String noLicFix, 
 						final String auditRpt, final String licList, final String licText) {
 		setRestAPILoc(restAPILoc);
 		setRestAPIKey(restAPIKey);
 		setRestAPIPID(restAPIPID);
 		setAppovedLic(appovedLic);
 		setLicXlate(licXlate);
-		setWhiteList(whiteList);
+		setNoLicFix(noLicFix);
 		setAuditRpt(auditRpt);
 		setLicList(licList);
 		setLicText(licText);
@@ -85,8 +85,8 @@ public class ThirdPartyAuditNLicenseValidation
 		this.licXlate = (null == this.licXlate) ? licXlate : this.licXlate;
 	}
 	
-	private void setWhiteList(final String whiteList) {
-		this.whiteList = (null == this.whiteList) ? whiteList : this.whiteList;
+	private void setNoLicFix(final String noLicFix) {
+		this.noLicFix = (null == this.noLicFix) ? noLicFix : this.noLicFix;
 	}
 
 	private void setAuditRpt(final String auditRpt) {
@@ -105,7 +105,7 @@ public class ThirdPartyAuditNLicenseValidation
 		try {		
 			final ApiClient apiClient = new ApiClient(this.restAPILoc, this.restAPIKey, this.logger);
 			final String result = apiClient.getDependencies(this.restAPIPID);			
-			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.whiteList, apiClient);
+			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.noLicFix, apiClient);
 			processor.validateLibs(result);
 			processor.generateOutputFiles(this.auditRpt, this.licList, this.licText);
 			

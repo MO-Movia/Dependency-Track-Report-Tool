@@ -100,7 +100,7 @@ public class Processor {
     private final ConsoleLogger logger;
 	private final String appovedLic;
 	private final String licXlate;
-	private final String whiteList;
+	private final String noLicFix;
 	private final ApiClient apiClient;
 
 	private String auditReport = "";
@@ -108,16 +108,16 @@ public class Processor {
 	private String licenseText = "";
 	private String[] approvedLicenses = null;
 	private HashMap<String,JsonObject> uniqueLicense = null;
-	private HashMap<String,String> whiteListMap = null;
+	private HashMap<String,String> noLicFixMap = null;
 	private HashMap<String,String> licXlateMap = null;
 	private ArrayList<LibAudit> auditList = null;
 	private ArrayList<String> apiLicenses = null;
 
-    public Processor(final ConsoleLogger logger, final String appovedLic, final String licXlate, final String whiteList, final ApiClient apiClient) {
+    public Processor(final ConsoleLogger logger, final String appovedLic, final String licXlate, final String noLicFix, final ApiClient apiClient) {
         this.logger = logger;
 		this.appovedLic = appovedLic;
 		this.licXlate = licXlate;
-		this.whiteList = whiteList;
+		this.noLicFix = noLicFix;
 		this.apiClient = apiClient;
     }
 
@@ -395,7 +395,7 @@ public class Processor {
 			// license info (compliant or not)
 			// when found a "commercial" text in the license, it shall be listed as "Note [<commercial_license_name>]" in the audit report and if any input files have any 
 			// "commercial" license specified, it shall be skipped for verifying the name with dependency track.
-			// I think what I was trying to say was that if you did a translation and you didn’t find the translated license in the white-list, I would 
+			// I think what I was trying to say was that if you did a translation and you didn’t find the translated license in the no-lic-fix, I would 
 			// like an indication that there was a translation, and would like both the original license name and the translated license name in the log 
 			// file (being that neither is valid).			
 			this.auditReport += libAudit.isCompliant ? OK_TEXT : ((libAudit.isCommercial ? "Note" : "Invalid") + " [" + libAudit.license + "]" + ((null != libAudit.inValidXlateLicense) ? " Invalid Translated License [" + libAudit.inValidXlateLicense + "]" : ""));
@@ -666,13 +666,14 @@ public class Processor {
 	
 	private boolean checkWL(String libName, final String[] license) {
 		boolean found = false;
+		String licName = null;
 		
 		try {
-			// Check license whitelist file, see if there is the library name. It will provide the appropriate license name if found, which 
+			// Check license noLicFix file, see if there is the library name. It will provide the appropriate license name if found, which 
 			// will bring this back into compliance.
-			if (null == this.whiteListMap) {
-				this.whiteListMap = new HashMap<String,String>();
-				final BufferedReader reader = new BufferedReader(new FileReader(this.whiteList));
+			if (null == this.noLicFixMap) {
+				this.noLicFixMap = new HashMap<String,String>();
+				final BufferedReader reader = new BufferedReader(new FileReader(this.noLicFix));
 				String line = reader.readLine();
 
 				while (line != null) {
@@ -683,15 +684,18 @@ public class Processor {
 						int iLen = vars.length;
 						final String libraryName = (0 < iLen) ? vars[0] : "";
 						final String licenseName = (1 < iLen) ? vars[1] : "";
-						this.whiteListMap.put(libraryName, licenseName);
+						this.noLicFixMap.put(libraryName, licenseName);
+
+						if(libName == libraryName) {
+							licName = licenseName;
+						}
 					}
 					// read next line
 					line = reader.readLine();
 				}
 				reader.close();
-			}
+			}			
 			
-			String licName = this.whiteListMap.get(libName);
 			if (null != licName) {			
 				license[0] = licName; 
 				// The Valid License column contains all the information we need about the license – 

@@ -48,7 +48,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 
 	private String appovedLic = DescriptorImpl.defaultAppovedLic;
 
-	private String whiteList = DescriptorImpl.defaultWhiteList;
+	private String noLicFix = DescriptorImpl.defaultNoLicFix;
 
 	private String auditRpt = DescriptorImpl.defaultAuditRpt;
 
@@ -58,14 +58,14 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 
     @DataBoundConstructor
     public ThirdPartyAuditNLicenseValidationBuilder (final String restAPILoc, final String restAPIKey, final String restAPIPID, 
-											final String appovedLic, final String licXlate, final String whiteList, 
+											final String appovedLic, final String licXlate, final String noLicFix, 
 											final String auditRpt, final String licList, final String licText) {
         this.restAPILoc = restAPILoc;
         this.restAPIKey = restAPIKey;
         this.restAPIPID = restAPIPID;
         this.appovedLic = appovedLic;
         this.licXlate = licXlate;
-        this.whiteList = whiteList;
+        this.noLicFix = noLicFix;
         this.auditRpt = auditRpt;
         this.licList = licList;
         this.licText = licText;
@@ -122,13 +122,13 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     }
 
     @DataBoundSetter
-    public void setWhiteList(@NonNull String whiteList) {
-        this.whiteList = whiteList;
+    public void setNoLicFix(@NonNull String noLicFix) {
+        this.noLicFix = noLicFix;
     }
     
     @NonNull
-    public String getWhiteList() {
-        return whiteList;
+    public String getNoLicFix() {
+        return noLicFix;
     }
 
     @DataBoundSetter
@@ -171,7 +171,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 		StringBuilder parsedPath = new StringBuilder("");
 		String parsedAppovedLic = appovedLic;
 		String parsedLicXlate = licXlate;
-		String parsedWhiteList = whiteList;
+		String parsedNoLicFix = noLicFix;
 		String parsedAuditRpt = auditRpt;
 		String parsedLicList = licList;
 		String parsedLicText = licText;
@@ -188,9 +188,9 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 				parsedLicXlate = parsedPath.toString();
 				cLogger.log("ParsedLicXlatePath: " + parsedLicXlate);
 			}
-			if(PluginUtil.parseFilePath(whiteList, envVars, parsedPath)) {
-				parsedWhiteList = parsedPath.toString();
-				cLogger.log("ParsedWhiteListPath: " + parsedWhiteList);
+			if(PluginUtil.parseFilePath(noLicFix, envVars, parsedPath)) {
+				parsedNoLicFix = parsedPath.toString();
+				cLogger.log("ParsedNoLicFixPath: " + parsedNoLicFix);
 			}
 			if(PluginUtil.parseFilePath(auditRpt, envVars, parsedPath)) {
 				parsedAuditRpt = parsedPath.toString();
@@ -207,7 +207,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
         }
 		
 		if(null != tpalvu) {
-			tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedWhiteList, parsedAuditRpt, parsedLicList, parsedLicText);
+			tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedNoLicFix, parsedAuditRpt, parsedLicList, parsedLicText);
 		}
     }
 
@@ -220,7 +220,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 		public static final String defaultRestAPIPID = "588d64a8-a208-4d5f-b3f0-1288acd5ee5a";
 		public static final String defaultAppovedLic = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt";
 		public static final String defaultLicXlate = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt";
-		public static final String defaultWhiteList = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_white_list.txt";
+		public static final String defaultNoLicFix = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_no_lic_fix.txt";
 		public static final String defaultAuditRpt = "${WORKSPACE}\\outputs\\movia_audit_out.csv";
 		public static final String defaultLicList = "${WORKSPACE}\\outputs\\movia_license_list.csv";
 		public static final String defaultLicText = "${WORKSPACE}\\outputs\\movia_license_text.txt";
@@ -240,7 +240,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
             return PluginUtil.doCheckPath(value);
         }
 		
-		public FormValidation doCheckWhiteList(@QueryParameter String value)
+		public FormValidation doCheckNoLicFix(@QueryParameter String value)
                 throws IOException, ServletException {
             return PluginUtil.doCheckPath(value);
         }
