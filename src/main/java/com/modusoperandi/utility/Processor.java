@@ -686,7 +686,7 @@ public class Processor {
 						final String licenseName = (1 < iLen) ? vars[1] : "";
 						this.noLicFixMap.put(libraryName, licenseName);
 
-						if(libName == libraryName) {
+						if(libName.equals(libraryName)) {
 							licName = licenseName;
 						}
 					}
@@ -694,7 +694,9 @@ public class Processor {
 					line = reader.readLine();
 				}
 				reader.close();
-			}			
+			} else {
+				licName = this.noLicFixMap.get(libName);
+			}
 			
 			if (null != licName) {			
 				license[0] = licName; 
@@ -731,7 +733,8 @@ public class Processor {
 						final String licenseName = (0 < iLen) ? vars[0] : "";
 						final String correctLicName = (1 < iLen) ? vars[1] : "";
 						this.licXlateMap.put(licenseName, correctLicName);
-						if(licName == licenseName) {
+						
+						if(licName.equals(licenseName)) {
 							correctLName = correctLicName;
 						}
 					}
@@ -739,6 +742,8 @@ public class Processor {
 					line = reader.readLine();
 				}
 				reader.close();
+			} else {
+				correctLName = this.licXlateMap.get(licName);
 			}
 
 			if (null != correctLName) {
