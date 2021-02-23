@@ -582,7 +582,7 @@ public class Processor {
 			// is potentially a translate name for it (in the Translate License File (TLF). If so, you translate it, and then again check 
 			// to see if the translated license name is in the VLF. If it is, it is valid. If not, both the original license name and the 
 			// translated license name goes into the log file as an invalid license..			
-			if(!licName) {
+			if(null != licName && 0 < licName.length()) {
 				compliant = this.checkWL(libName, license);
 			} else {
 				compliant = true;
