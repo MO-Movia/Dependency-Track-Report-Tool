@@ -638,7 +638,8 @@ public class Processor {
 				while (line != null) {
 					// skip comment lines
 					if (!line.startsWith(COMMENT_LINE)) {
-						approvedLicenses.add(line);
+						// when you grab the license text from the various license files, and purge any leading and trailing spaces.
+						approvedLicenses.add(line.trim());
 					}
 					// read next line
 					line = reader.readLine();
@@ -664,64 +665,26 @@ public class Processor {
 		return approved;
 	}
 	
-	private boolean checkWL(final String libName, final String[] license) {
-		boolean found = false;
-		String licName = null;
-		
-		try {
-			// Check license noLicFix file, see if there is the library name. It will provide the appropriate license name if found, which 
-			// will bring this back into compliance.
-			if (null == this.noLicFixMap) {
-				this.noLicFixMap = new HashMap<String,String>();
-				final BufferedReader reader = new BufferedReader(new FileReader(this.noLicFix));
-				String line = reader.readLine();
-
-				while (line != null) {
-					// skip comment lines
-					if (!line.startsWith(COMMENT_LINE)) {
-						// since license names have commas in it!  use space-right chevron-space format as delimeter
-						String[] vars = line.split(SEP_INPUT);
-						int iLen = vars.length;
-						final String libraryName = (0 < iLen) ? vars[0] : "";
-						final String licenseName = (1 < iLen) ? vars[1] : "";
-						this.noLicFixMap.put(libraryName, licenseName);
-
-						if(libName.equals(libraryName)) {
-							licName = licenseName;
-						}
-					}
-					// read next line
-					line = reader.readLine();
-				}
-				reader.close();
-			} else {
-				licName = this.noLicFixMap.get(libName);
-			}
-			
-			if (null != licName) {			
-				license[0] = licName; 
-				// The Valid License column contains all the information we need about the license – 
-				// either it is valid (it is in either the white list, approved list, or translate list), or it is not
-				// Valid == Compliant ie "license info (valid or not)" column alone is enough.  Thus, I don’t see any reason for the compliant column
-				found = true;
-			}
-		} catch (Exception ex) {
-			this.logger.log( "checkWL error for " + libName + " : " + ex.getMessage());
-		}
-		
-		return found;
+	private boolean checkWL(final String libName, final String[] license) {		
+		return checkLicenseText("checkWL", libName, license, this.noLicFixMap, this.noLicFix);;
 	}
 	
 	private boolean checkXLate(final String licName, final String[] license) {
+		return checkLicenseText("checkXLate", licName, license, this.licXlateMap, this.licXlate);
+	}
+	
+	private boolean checkLicenseText(final String funName, final String libORLicName, final String[] license, final HashMap map, final String fileName) {
 		boolean found = false;
 		String correctLName = null;
 		
 		try {
+			// Check license noLicFix file, see if there is the library name. It will provide the appropriate license name if found, which 
+			// will bring this back into compliance.
 			// Check license translation file, see if the license text is in there, and then the appropriate license ID that will map to 
-			// the appropriate license in Dependency-Track. If found, this will bring this back into compliance.
-			if (null == this.licXlateMap) {
-				this.licXlateMap = new HashMap<String,String>();
-				final BufferedReader reader = new BufferedReader(new FileReader(this.licXlate));
+			// the appropriate license in Dependency-Track. If found, this will bring this back into compliance.			
+			if (null == map) {
+				map = new HashMap<String,String>();
+				final BufferedReader reader = new BufferedReader(new FileReader(fileName));
 				String line = reader.readLine();
 
 				while (line != null) {
@@ -731,10 +694,11 @@ public class Processor {
 						String[] vars = line.split(SEP_INPUT);
 						int iLen = vars.length;
 						final String licenseName = (0 < iLen) ? vars[0] : "";
-						final String correctLicName = (1 < iLen) ? vars[1] : "";
-						this.licXlateMap.put(licenseName, correctLicName);
+						// when you grab the license text from the various license files, and purge any leading and trailing spaces.
+						final String correctLicName = (1 < iLen) ? vars[1].trim() : "";
+						map.put(licenseName, correctLicName);
 						
-						if(licName.equals(licenseName)) {
+						if(libORLicName.equals(licenseName)) {
 							correctLName = correctLicName;
 						}
 					}
@@ -743,7 +707,7 @@ public class Processor {
 				}
 				reader.close();
 			} else {
-				correctLName = this.licXlateMap.get(licName);
+				correctLName = map.get(libORLicName);
 			}
 
 			if (null != correctLName) {
@@ -754,7 +718,7 @@ public class Processor {
 				found = true;
 			}
 		} catch (Exception ex) {
-			this.logger.log( "checkXLate error for " + licName + " : " + ex.getMessage());
+			this.logger.log( funName + " error for " + libORLicName + " : " + ex.getMessage());
 		}
 		
 		return found;
