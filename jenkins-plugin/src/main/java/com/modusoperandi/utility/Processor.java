@@ -694,8 +694,8 @@ public class Processor {
 						// since license names have commas in it!  use space-right chevron-space format as delimeter
 						String[] vars = line.split(SEP_INPUT);
 						int iLen = vars.length;
-						final String licenseName = (0 < iLen) ? vars[0] : "";
 						// when you grab the license text from the various license files, and purge any leading and trailing spaces.
+						final String licenseName = (0 < iLen) ? vars[0].trim() : "";
 						final String correctLicName = (1 < iLen) ? vars[1].trim() : "";
 						map.put(licenseName, correctLicName);
 						
