@@ -667,14 +667,14 @@ public class Processor {
 	}
 	
 	private boolean checkWL(final String libName, final String[] license) {		
-		return checkLicenseText("checkWL", libName, license, this.noLicFixMap, this.noLicFix);;
+		return checkLicenseText("checkWL", libName, license, this.noLicFixMap, this.noLicFix);
 	}
 	
 	private boolean checkXLate(final String licName, final String[] license) {
 		return checkLicenseText("checkXLate", licName, license, this.licXlateMap, this.licXlate);
 	}
 	
-	private boolean checkLicenseText(final String funName, final String libORLicName, final String[] license, final HashMap map, final String fileName) {
+	private boolean checkLicenseText(final String funName, final String libORLicName, final String[] license, HashMap<String,String> map, final String fileName) {
 		boolean found = false;
 		String correctLName = null;
 		
