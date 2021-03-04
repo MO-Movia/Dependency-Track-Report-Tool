@@ -77,12 +77,12 @@ From the cloned folder run
 <u>Assumptions:</u>
  - Jenkins Project Name: MOVIA-CORE 
  - JENKINS_HOME:  C:\Users\User_Name\\.jenkins 
- - WORKSPACE : C:\Users\User_Name\\.jenkins\workspace
+ - WORKSPACE: C:\Users\User_Name\\.jenkins\workspace
  - BASE: C:\Program Files\Jenkins  ( you can find this path in *Manage Jenkins > System Information > Environment Variables > BASE* ) 
  - OS: Windows 8 
  - Plugin installed via Manage *Jenkins > Manage Plugin > Upload Plugin* 
  - Project configured with ***Add build step** - " Third Party Audit & License Validity"*.
- - Project Build Number is : 12
+ - Project Build Number: 12
 
 A couple of usage of Input/Output and their expected/resultant paths:
  
