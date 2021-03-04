@@ -1,3 +1,4 @@
+
 # Third Party Audit & License Validation Jenkins Plugin (TPALVU)
 
 ### Download Source
@@ -75,7 +76,8 @@ From the cloned folder run
 <u>Input-Output Configuration Hints:<u>
 <u>Assumptions:</u>
  - Jenkins Project Name: MOVIA-CORE 
- - JENKINS_HOME:  C:\Users\User_Name\.jenkins 
+ - JENKINS_HOME:  C:\Users\User_Name\\.jenkins 
+ - WORKSPACE : C:\Users\User_Name\\.jenkins\workspace
  - BASE: C:\Program Files\Jenkins  ( you can find this path in *Manage Jenkins > System Information > Environment Variables > BASE* ) 
  - OS: Windows 8 
  - Plugin installed via Manage *Jenkins > Manage Plugin > Upload Plugin* 
@@ -86,12 +88,12 @@ A couple of usage of Input/Output and their expected/resultant paths:
  
 | Input/Output Configuration | File Name| Input/Output File Path
 |--|--|--|
-| Approved License File | ${WORKSPACE}\inputs\movia_approved_licenses.txt |C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\inputs\movia_approved_licenses.txt
+| Approved License File | ${WORKSPACE}\inputs\movia_approved_licenses.txt |C:\Users\User_Name\\.jenkins\workspace\MOVIA-CORE\inputs\movia_approved_licenses.txt
 | Approved License File |  |  If empty, shall be using the (default) value from the config file.
 | Approved License File | ..\movia_approved_licenses.txt| C:\Program Files\movia_approved_licenses.txt
 | Audit Report | movia_audit_out.csv |C:\Program Files\Jenkins\movia_audit_out.csv
-| Audit Report | ${WORKSPACE}\movia_audit_out.csv |C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\movia_audit_out.csv
-| Audit Report | ${WORKSPACE}\${BUILD_NUMBER}-movia_audit_out.csv| C:\Users\User_Name\.jenkins\workspace\MOVIA-CORE\12-movia_audit_out.csv
+| Audit Report | ${WORKSPACE}\movia_audit_out.csv |C:\Users\User_Name\\.jenkins\workspace\MOVIA-CORE\movia_audit_out.csv
+| Audit Report | ${WORKSPACE}\${BUILD_NUMBER}-movia_audit_out.csv| C:\Users\User_Name\\.jenkins\workspace\MOVIA-CORE\12-movia_audit_out.csv
 | Audit Report | ..\movia_audit_out.csv| C:\Program Files\movia_audit_out.csv
 
 NOTE: Generated file path shall be in the console logs.
