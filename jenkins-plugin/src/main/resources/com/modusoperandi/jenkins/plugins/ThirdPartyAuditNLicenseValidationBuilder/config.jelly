@@ -18,6 +18,9 @@
     <f:entry title="${%No License Fix File}" field="noLicFix">
         <f:textbox default="${descriptor.defaultNoLicFix}"/>
     </f:entry>
+    <f:entry title="${%License Text Input File}" field="licTextInput">
+        <f:textbox default="${descriptor.defaultLicTextInput}"/>
+    </f:entry>	
      <f:entry title="${%Audit Report}" field="auditRpt">
         <f:textbox default="${descriptor.defaultAuditRpt}"/>
     </f:entry>

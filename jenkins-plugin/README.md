@@ -62,6 +62,7 @@ From the cloned folder run
 | Approved License File |File path of the *movia_approved_licenses.txt* in the *inputs*  folder | ${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt |
 | License Translation File |File path of the *movia_lic_xlate_list.txt* in the *inputs*  folder  | ${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt |
 | No License Fix File |File path of the *movia_no_lic_fix.txt* in the *inputs*  folder  | ${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_no_lic_fix.txt |
+| License Text Input File |File path of the *License_text_input.txt* in the *inputs*  folder  | ${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\License_text_input.txt |
 | Audit Report |File path of the *movia_audit_out.csv* in the *outputs*  folder   | ${WORKSPACE}\\outputs\\movia_audit_out.csv |
 | License List |File path of the *movia_license_list.csv* in the *outputs*  folder   | ${WORKSPACE}\\outputs\\movia_license_list.csv |
 | License Text |File path of the *movia_license_text.txt* in the *outputs*  folder| ${WORKSPACE}\\outputs\\movia_license_text.txt |

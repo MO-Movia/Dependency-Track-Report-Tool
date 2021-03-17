@@ -50,6 +50,8 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 
 	private String noLicFix = DescriptorImpl.defaultNoLicFix;
 
+	private String licTextInput = DescriptorImpl.defaultLicTextInput;
+
 	private String auditRpt = DescriptorImpl.defaultAuditRpt;
 
 	private String licList = DescriptorImpl.defaultLicList;
@@ -59,13 +61,15 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     @DataBoundConstructor
     public ThirdPartyAuditNLicenseValidationBuilder (final String restAPILoc, final String restAPIKey, final String restAPIPID, 
 											final String appovedLic, final String licXlate, final String noLicFix, 
-											final String auditRpt, final String licList, final String licText) {
+											final String auditRpt, final String licList, final String licText, 
+											final String licTextInput) {
         this.restAPILoc = restAPILoc;
         this.restAPIKey = restAPIKey;
         this.restAPIPID = restAPIPID;
         this.appovedLic = appovedLic;
         this.licXlate = licXlate;
         this.noLicFix = noLicFix;
+		this.licTextInput = licTextInput;
         this.auditRpt = auditRpt;
         this.licList = licList;
         this.licText = licText;
@@ -131,6 +135,16 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
         return noLicFix;
     }
 
+	@DataBoundSetter
+    public void setLicTextInput(@NonNull String licTextInput) {
+        this.licTextInput = licTextInput;
+    }
+    
+    @NonNull
+    public String getLicTextInput() {
+        return licTextInput;
+    }
+
     @DataBoundSetter
     public void setAuditRpt(@NonNull String auditRpt) {
         this.auditRpt = auditRpt;
@@ -172,6 +186,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 		String parsedAppovedLic = appovedLic;
 		String parsedLicXlate = licXlate;
 		String parsedNoLicFix = noLicFix;
+		String parsedLicTextInput = licTextInput;
 		String parsedAuditRpt = auditRpt;
 		String parsedLicList = licList;
 		String parsedLicText = licText;
@@ -192,6 +207,10 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 				parsedNoLicFix = parsedPath.toString();
 				cLogger.log("ParsedNoLicFixPath: " + parsedNoLicFix);
 			}
+			if(PluginUtil.parseFilePath(licTextInput, envVars, parsedPath)) {
+				parsedLicTextInput = parsedPath.toString();
+				cLogger.log("ParsedLicTextInput: " + parsedLicTextInput);
+			}
 			if(PluginUtil.parseFilePath(auditRpt, envVars, parsedPath)) {
 				parsedAuditRpt = parsedPath.toString();
 				cLogger.log("ParsedAuditRptPath: " + parsedAuditRpt);
@@ -207,7 +226,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
         }
 		
 		if(null != tpalvu) {
-			tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedNoLicFix, parsedAuditRpt, parsedLicList, parsedLicText);
+			tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedNoLicFix, parsedAuditRpt, parsedLicList, parsedLicText, parsedLicTextInput);
 		}
     }
 
@@ -221,6 +240,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 		public static final String defaultAppovedLic = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt";
 		public static final String defaultLicXlate = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt";
 		public static final String defaultNoLicFix = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_no_lic_fix.txt";
+		public static final String defaultLicTextInput = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\License_text_input.txt";
 		public static final String defaultAuditRpt = "${WORKSPACE}\\outputs\\movia_audit_out.csv";
 		public static final String defaultLicList = "${WORKSPACE}\\outputs\\movia_license_list.csv";
 		public static final String defaultLicText = "${WORKSPACE}\\outputs\\movia_license_text.txt";
@@ -241,6 +261,11 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
         }
 		
 		public FormValidation doCheckNoLicFix(@QueryParameter String value)
+                throws IOException, ServletException {
+            return PluginUtil.doCheckPath(value);
+        }
+
+		public FormValidation doCheckLicTextInput(@QueryParameter String value)
                 throws IOException, ServletException {
             return PluginUtil.doCheckPath(value);
         }

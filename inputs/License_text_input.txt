@@ -1,0 +1,14 @@
+
+MOVIA License File.
+
+ 
+
+Movia Commercial License: Our commercial license text.
+
+ 
+
+See the movia-talon_license_list.csv file for all modules used in the Movia software. All licenses from those modules are listed here for ease of access.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------

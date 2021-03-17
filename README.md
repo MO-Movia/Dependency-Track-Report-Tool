@@ -58,6 +58,7 @@ Available configurations are:
 | -A | File path of the Approved Licenses  |
 | -X | File path of the License Translations  |
 | -F | File path of the No License Fix List |
+| -S | File path of the License Text Input |
 | -R | File path of the Audit report csv |
 | -L | File path of the unique License list  |
 | -T | File path of the License Text|

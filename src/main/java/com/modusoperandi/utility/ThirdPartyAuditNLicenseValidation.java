@@ -33,6 +33,8 @@ public class ThirdPartyAuditNLicenseValidation
 	private String appovedLic;
 
 	private String noLicFix;
+	
+	private String licTextI;
 
 	private String auditRpt;
 
@@ -51,9 +53,10 @@ public class ThirdPartyAuditNLicenseValidation
 	private static final String DEF_APPOVEDLIC = "movia_approved_licenses.txt";
 	private static final String DEF_LICXLATE = "movia_lic_xlate_list.txt";
 	private static final String DEF_NOLICFIX = "movia_no_lic_fix.txt";
+	private static final String DEF_LICTXTI = "License_text_input.txt";
 	private static final String DEF_AUDITRPT = "movia_audit_out.csv";			
 	private static final String DEF_LICLIST = "movia_license_list.csv";
-	private static final String DEF_LICTEXT = "movia_license_text.txt";
+	private static final String DEF_LICTEXT = "movia_license_text.txt";	
 	
 	public ThirdPartyAuditNLicenseValidation(String[] args) {
 		initLogger();
@@ -65,7 +68,8 @@ public class ThirdPartyAuditNLicenseValidation
 	
 	public ThirdPartyAuditNLicenseValidation(final String restAPILoc, final String restAPIKey, final String restAPIPID, 
 											final String appovedLic, final String licXlate, final String noLicFix, 
-											final String auditRpt, final String licList, final String licText) {
+											final String auditRpt, final String licList, final String licText,
+											final String licTextI) {
 		initLogger();
 		setRestAPILoc(restAPILoc);
 		setRestAPIKey(restAPIKey);
@@ -73,9 +77,10 @@ public class ThirdPartyAuditNLicenseValidation
 		setAppovedLic(appovedLic);
 		setLicXlate(licXlate);
 		setNoLicFix(noLicFix);
+		setLicTextInput(licTextI);
 		setAuditRpt(auditRpt);
 		setLicList(licList);
-		setLicText(licText);
+		setLicText(licText);		
 		loadProperties();
 		doJOB();
 	}
@@ -117,6 +122,10 @@ public class ThirdPartyAuditNLicenseValidation
 	private void setNoLicFix(final String noLicFix) {
 		this.noLicFix = (null == this.noLicFix) ? noLicFix : this.noLicFix;
 	}
+	
+	private void setLicTextInput(final String licTextI) {
+		this.licTextI = (null == this.licTextI) ? licTextI : this.licTextI;
+	}
 
 	private void setAuditRpt(final String auditRpt) {
 		this.auditRpt = (null == this.auditRpt) ? auditRpt : this.auditRpt;
@@ -157,6 +166,9 @@ public class ThirdPartyAuditNLicenseValidation
 							case 'F':
 								this.setNoLicFix(arg.substring(3));
 								break;
+							case 'S':
+								this.setLicTextInput(arg.substring(3));
+								break;								
 							case 'R':
 								this.setAuditRpt(arg.substring(3));
 								break;
@@ -187,7 +199,7 @@ public class ThirdPartyAuditNLicenseValidation
 	}
 	
 	private void displayHelp() {
-		this.logger.log0("Usage: java -jar utility.tpalv-1.0.0-standalone.jar [-configurations]\r\nwhere each configuration is in the format -<configuration>=<value> and seperated by a space\r\n\r\nAvailable configurations are:\r\n\t-U\tDependency Track Rest API URL.\r\n\t-K\tDependency Track Rest API Key.\r\n\t-I\tDependency Track Project ID.\r\n\t-A\tFile path of the Approved Licenses.\r\n\t-X\tFile path of the License Translations.\r\n\t-W\tFile path of the White list.\r\n\t-R\tFile path of the Audit report csv.\r\n\t-L\tFile path of the unique License list.\r\n\t-T\tFile path of the License Text.\r\n\t-?\tprint help message.");
+		this.logger.log0("Usage: java -jar utility.tpalv-1.0.0-standalone.jar [-configurations]\r\nwhere each configuration is in the format -<configuration>=<value> and seperated by a space\r\n\r\nAvailable configurations are:\r\n\t-U\tDependency Track Rest API URL.\r\n\t-K\tDependency Track Rest API Key.\r\n\t-I\tDependency Track Project ID.\r\n\t-A\tFile path of the Approved Licenses.\r\n\t-X\tFile path of the License Translations.\r\n\t-F\tFile path of the No License Fix.\r\n\t-S\tFile path of the License Text Input.\r\n\t-R\tFile path of the Audit report csv.\r\n\t-L\tFile path of the unique License list.\r\n\t-T\tFile path of the License Text.\r\n\t-?\tprint help message.");
 	}
 	
 	private void loadProperties() {
@@ -210,6 +222,8 @@ public class ThirdPartyAuditNLicenseValidation
 			this.setLicXlate(props.getProperty("LIC_XLATE", DEF_LICXLATE));
 			
 			this.setNoLicFix(props.getProperty("NOLICFIX", DEF_NOLICFIX));
+			
+			this.setLicTextInput(props.getProperty("LIC_TEXT", DEF_LICTXTI));
 			
 			this.setAuditRpt(props.getProperty("AUDIT_RPT", DEF_AUDITRPT));
 			
@@ -234,9 +248,10 @@ public class ThirdPartyAuditNLicenseValidation
 		this.logger.log("\r\nAPPROVED_LIC: " + this.appovedLic);
 		this.logger.log("\r\nLIC_XLATE: " + this.licXlate);			
 		this.logger.log("\r\nNOLICFIX: " + this.noLicFix);
+		this.logger.log("\r\nLIC_TEXT: " + this.licTextI);
 		this.logger.log("\r\nAUDIT_RPT: " + this.auditRpt);
 		this.logger.log("\r\nLICENSE_LIST: " + this.licList);			
-		this.logger.log("\r\nLICENSE_TEXT: " + this.licText);		
+		this.logger.log("\r\nLICENSE_TEXT: " + this.licText);	
 	}
 	
 	private void setDefaultValues() {
@@ -248,6 +263,7 @@ public class ThirdPartyAuditNLicenseValidation
 		this.setAppovedLic(DEF_APPOVEDLIC);
 		this.setLicXlate(DEF_LICXLATE);
 		this.setNoLicFix(DEF_NOLICFIX);
+		this.setLicTextInput(DEF_LICTXTI);
 		this.setAuditRpt(DEF_AUDITRPT);			
 		this.setLicList(DEF_LICLIST);
 		this.setLicText(DEF_LICTEXT);
@@ -257,7 +273,7 @@ public class ThirdPartyAuditNLicenseValidation
 		try {		
 			final ApiClient apiClient = new ApiClient(this.restAPILoc, this.restAPIKey, this.logger);
 			final String result = apiClient.getDependencies(this.restAPIPID);			
-			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.noLicFix, apiClient);
+			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.noLicFix, this.licTextI, apiClient);
 			processor.validateLibs(result);
 			processor.generateOutputFiles(this.auditRpt, this.licList, this.licText);
 			

@@ -10,6 +10,8 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonArray;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.File;
 import java.io.StringReader;
 import java.io.FileOutputStream;
@@ -101,6 +103,7 @@ public class Processor {
 	private final String appovedLic;
 	private final String licXlate;
 	private final String noLicFix;
+	private final String licTextInput;
 	private final ApiClient apiClient;
 
 	private String auditReport = "";
@@ -113,11 +116,12 @@ public class Processor {
 	private ArrayList<LibAudit> auditList = null;
 	private ArrayList<String> apiLicenses = null;
 
-    public Processor(final ConsoleLogger logger, final String appovedLic, final String licXlate, final String noLicFix, final ApiClient apiClient) {
+    public Processor(final ConsoleLogger logger, final String appovedLic, final String licXlate, final String noLicFix, final String licTextInput, final ApiClient apiClient) {
         this.logger = logger;
 		this.appovedLic = appovedLic;
 		this.licXlate = licXlate;
 		this.noLicFix = noLicFix;
+		this.licTextInput = licTextInput;
 		this.apiClient = apiClient;
     }
 
@@ -473,6 +477,15 @@ public class Processor {
 	private String getLicenseText(final JsonObject jsonObj) {
 		String licenseName = "";
 		try {
+			// One of the licenses requires that we include GPL license text – even though the license that is asking for this invalidates many aspects of that license. 
+			// Instead of hard-coding this into the movia-talon_license_text.txt, would like to have yet another input file that is just any text we put in there, 
+			// and you will transfer that to the top of the movia-talon_license_text.txt file, and then append all the license text as you do now. 
+			// This way, we can add other items we might need in there to meet other license requirements without having to ask for yet another code change. Maybe that input file could be called License_text_input.txt.
+			if(this.licenseText.isEmpty()) {
+				this.licenseText += NEW_LINE;
+				this.licenseText += getLicenseTextInput();
+				this.licenseText += NEW_LINE;
+			}
 			// List all unique license text for licenses listed in the first file – License name, new line, the license text, new line, new 
 			// line, next license. Note that the text for the licenses that would be placed into the license file are also available via 
 			// Dependency-Tracker REST calls.
@@ -723,6 +736,18 @@ public class Processor {
 		
 		return found;
 	}
+	
+	private String getLicenseTextInput() {
+		String content = "";
+
+		try {
+			content = new String(Files.readAllBytes(Paths.get(this.licTextInput)));
+		} catch (Exception ex) {
+			this.logger.log( "getLicenseTextInput error " + ex.getMessage());
+		}
+
+		return content;
+	} 
 	
 	protected void generateOutputFiles(String auditRpt, String licList, String licText) {
 		try {
