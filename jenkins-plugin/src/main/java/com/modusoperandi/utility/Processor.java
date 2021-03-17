@@ -486,6 +486,7 @@ public class Processor {
 				this.licenseText += NEW_LINE;
 				this.licenseText += getLicenseTextInput();
 				this.licenseText += NEW_LINE;
+				this.licenseText += NEW_LINE;
 			}
 			// List all unique license text for licenses listed in the first file – License name, new line, the license text, new line, new 
 			// line, next license. Note that the text for the licenses that would be placed into the license file are also available via 
