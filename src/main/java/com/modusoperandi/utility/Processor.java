@@ -231,7 +231,12 @@ public class Processor {
 					this.logger.log( "auditReport license error for " + libName + " : " + ex.getMessage());
 				}
 				
-				libAudit.isValidLicense = this.isValidLicenseEx(libAudit, libName, licName);
+				// Some libraries have license text, but they are wrong.  
+				// We don’t want to translate them because other libraries, this could be correct.  
+				// Thus, think we need to remove the first “License Text Found” check, 
+				// and ALWAYS check toe NLF list to see if the library is in there, and if it is, apply that license to the library.  
+				// Sorry, didn’t realize we were going to have libraries that listed accurate license names that were actually the wrong license for the module!
+				//libAudit.isValidLicense = this.isValidLicenseEx(libAudit, libName, licName);
 				licID = licName;
 				skipLicText = true;
 			}
