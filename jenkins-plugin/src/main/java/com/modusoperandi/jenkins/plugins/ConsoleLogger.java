@@ -16,6 +16,7 @@ public class ConsoleLogger extends LineTransformationOutputStream {
 
     /**
      * Log messages to the builds console.
+     * 
      * @param message The message to log
      */
     public void log(String message) {
