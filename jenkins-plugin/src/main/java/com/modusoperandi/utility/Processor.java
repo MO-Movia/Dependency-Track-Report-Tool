@@ -655,19 +655,18 @@ public class Processor {
 			// license names that were actually the wrong license for the module!
 			// if ((null == licName) || (null != licName && 0 == licName.trim().length())) {
 			compliant = this.checkWL(libName, license);
+			// The “No” out of the first decision should go to the next decision block: Is
+			// License in VLF.
+			compliant = this.isApproved(license[0]);
 
-			if (compliant) {
-				compliant = this.isApproved(license[0]);
+			if (!compliant) {
+				compliant = this.checkXLate(license[0], license);
 
-				if (!compliant) {
-					compliant = this.checkXLate(license[0], license);
+				if (compliant) {
+					compliant = this.isApproved(license[0]);
 
-					if (compliant) {
-						compliant = this.isApproved(license[0]);
-
-						if (!compliant) {
-							libAudit.inValidXlateLicense = license[0];
-						}
+					if (!compliant) {
+						libAudit.inValidXlateLicense = license[0];
 					}
 				}
 			}
