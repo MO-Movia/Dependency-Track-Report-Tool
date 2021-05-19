@@ -395,7 +395,8 @@ public class Processor {
 			this.auditReport += SEP_DELIMITER;
 
 			// description
-			this.auditReport += (null != libAudit.description) ? libAudit.description : "";
+			// prefix & suffix with double quotes to include any delimeters involved and thus the proper format is maintained correctly.
+			this.auditReport += (null != libAudit.description) ? ("\"" + libAudit.description + "\"") : "";
 			this.auditReport += SEP_DELIMITER;
 
 			// used version
