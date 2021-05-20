@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.StringReader;
 import java.io.FileOutputStream;
 import java.io.BufferedReader;
@@ -30,6 +31,7 @@ import org.spdx.rdfparser.license.ConjunctiveLicenseSet;
 import org.spdx.rdfparser.license.SpdxListedLicense;
 import org.spdx.rdfparser.license.ExtractedLicenseInfo;
 import org.spdx.rdfparser.license.WithExceptionOperator;
+import com.opencsv.CSVWriter;
 import com.modusoperandi.jenkins.plugins.ConsoleLogger;
 
 public class Processor {
@@ -94,13 +96,13 @@ public class Processor {
 	}
 
 	// since license names have commas in it! use TAB as delimeter
-	private static final String SEP_DELIMITER = "\t";
+	private static final char SEP_DELIMITER = '\t';
 	private static final String NEW_LINE = "\r\n";
 	private static final String COMMENT_LINE = "## ";
 	private static final String SEP_LINE = "------------------------------------------------------------------------\r\n";
 	private static final String OK_TEXT = "Yes";
 	private static final String SEP_INPUT = " -> ";
-	private static final String XLS_HEADER = "\"sep=" + SEP_DELIMITER + "\"";
+	private static final String XLS_HEADER = "sep=" + SEP_DELIMITER;
 
 	private final ConsoleLogger logger;
 	private final String appovedLic;
@@ -109,8 +111,6 @@ public class Processor {
 	private final String licTextInput;
 	private final ApiClient apiClient;
 
-	private String auditReport = "";
-	private String licenseList = "";
 	private String licenseText = "";
 	private String[] approvedLicenses = null;
 	private HashMap<String, JsonObject> uniqueLicense = null;
@@ -118,6 +118,8 @@ public class Processor {
 	private HashMap<String, String> licXlateMap = null;
 	private ArrayList<LibAudit> auditList = null;
 	private ArrayList<String> apiLicenses = null;
+	private ArrayList<String[]> auditCSVList = null;
+	private ArrayList<String[]> licenseCSVList = null;
 
 	public Processor(final ConsoleLogger logger, final String appovedLic, final String licXlate, final String noLicFix,
 			final String licTextInput, final ApiClient apiClient) {
@@ -331,38 +333,33 @@ public class Processor {
 	private void prepareAuditReportHeader() {
 		try {
 			// Easy trick to open in Excel formatted.
-			this.auditReport += XLS_HEADER;
-			this.auditReport += NEW_LINE;
+			String[] values = new String[1];
+			values[0] = XLS_HEADER;
+			this.auditCSVList.add(values);
 
+			values = new String[7];			
 			// library name
-			this.auditReport += "NAME";
-			this.auditReport += SEP_DELIMITER;
+			values[0] = "NAME";
 
 			// description
-			this.auditReport += "DESCRIPTION";
-			this.auditReport += SEP_DELIMITER;
+			values[1] = "DESCRIPTION";
 
 			// used version
-			this.auditReport += "USED VERSION";
-			this.auditReport += SEP_DELIMITER;
+			values[2] = "USED VERSION";
 
 			// latest version
-			this.auditReport += "LATEST VERSION";
-			this.auditReport += SEP_DELIMITER;
+			values[3] = "LATEST VERSION";
 
 			// Not latest version Flag
-			this.auditReport += "HAS LATEST VERSION";
-			this.auditReport += SEP_DELIMITER;
+			values[4] = "HAS LATEST VERSION";
 
 			// Valid License (compliant or not)
-			this.auditReport += "VALID LICENSE";
-			this.auditReport += SEP_DELIMITER;
+			values[5] = "VALID LICENSE";
 
 			// known vulnerabilities
-			this.auditReport += "VULNERABILITIES";
-			this.auditReport += SEP_DELIMITER;
+			values[6] = "VULNERABILITIES";
 
-			this.auditReport += NEW_LINE;
+			this.auditCSVList.add(values);
 		} catch (Exception ex) {
 			this.logger.log("prepareAuditReportHeader " + ex.getMessage());
 		}
@@ -370,20 +367,18 @@ public class Processor {
 
 	private void prepareLicenseListHeader() {
 		try {
+			this.licenseCSVList = new ArrayList<String[]>();
+
+			String[] values = new String[1];
 			// Easy trick to open in Excel formatted.
-			this.licenseList += XLS_HEADER;
-			this.licenseList += NEW_LINE;
+			values[0] = XLS_HEADER;
+			this.licenseCSVList.add(values);
 
-			this.licenseList += "LIBRARY";
-			this.licenseList += SEP_DELIMITER;
-
-			this.licenseList += "VERSION";
-			this.licenseList += SEP_DELIMITER;
-
-			this.licenseList += "LICENSE";
-			this.licenseList += SEP_DELIMITER;
-
-			this.licenseList += NEW_LINE;
+			values = new String[3];
+			values[0] = "LIBRARY";
+			values[1] = "VERSION";
+			values[2] = "LICENSE";
+			this.licenseCSVList.add(values);
 		} catch (Exception ex) {
 			this.logger.log("prepareLicenseListHeader " + ex.getMessage());
 		}
@@ -391,26 +386,22 @@ public class Processor {
 
 	private void prepareAuditReport(final LibAudit libAudit) {
 		try {
+			String[] values = new String[7];
 			// library name
-			this.auditReport += libAudit.name;
-			this.auditReport += SEP_DELIMITER;
+			values[0] = libAudit.name;
 
 			// description
 			// prefix & suffix with double quotes to include any delimeters involved and thus the proper format is maintained correctly.
-			this.auditReport += (null != libAudit.description) ? ("\"" + libAudit.description + "\"") : "";
-			this.auditReport += SEP_DELIMITER;
+			values[1] = (null != libAudit.description) ? libAudit.description : "";
 
 			// used version
-			this.auditReport += libAudit.usedVersion;
-			this.auditReport += SEP_DELIMITER;
+			values[2] = libAudit.usedVersion;
 
 			// latest version
-			this.auditReport += libAudit.latestVersion;
-			this.auditReport += SEP_DELIMITER;
+			values[3] = libAudit.latestVersion;
 
 			// Not latest version Flag
-			this.auditReport += libAudit.isLatestVersion ? OK_TEXT : "Not Latest";
-			this.auditReport += SEP_DELIMITER;
+			values[4] = libAudit.isLatestVersion ? OK_TEXT : "Not Latest";
 
 			// The Valid License column contains all the information we need about the
 			// license –
@@ -429,18 +420,16 @@ public class Processor {
 			// like an indication that there was a translation, and would like both the
 			// original license name and the translated license name in the log
 			// file (being that neither is valid).
-			this.auditReport += libAudit.isCompliant ? OK_TEXT
+			values[5] += libAudit.isCompliant ? OK_TEXT
 					: ((libAudit.isCommercial ? "Note" : "Invalid") + " [" + libAudit.license + "]"
 							+ ((null != libAudit.inValidXlateLicense)
 									? " Invalid Translated License [" + libAudit.inValidXlateLicense + "]"
 									: ""));
-			this.auditReport += SEP_DELIMITER;
 
 			// known vulnerabilities
-			this.auditReport += this.getVulnerabilitiesText(libAudit.vulnerabilities);
-			this.auditReport += SEP_DELIMITER;
+			values[6] = this.getVulnerabilitiesText(libAudit.vulnerabilities);
 
-			this.auditReport += NEW_LINE;
+			this.auditCSVList.add(values);
 		} catch (Exception ex) {
 			this.logger.log("prepareAuditReport " + ex.getMessage());
 		}
@@ -448,6 +437,7 @@ public class Processor {
 
 	private void prepareSortedAuditReport() {
 		try {
+			this.auditCSVList = new ArrayList<String[]>();
 			this.prepareAuditReportHeader();
 			this.auditList.sort(new LibAuditSorter());
 			this.auditList.forEach((libAudit) -> this.prepareAuditReport(libAudit));
@@ -475,20 +465,15 @@ public class Processor {
 
 	private void prepareLicenseList(final String libName, final String libVersion, final String licName) {
 		try {
+			String[] values = new String[3];
 			// For each library, list the library, version being used, the license name for
 			// the library, new line, next library. You can
 			// make this csv since it is still readable so that it could be brought into
 			// excel..
-			this.licenseList += libName;
-			this.licenseList += SEP_DELIMITER;
-
-			this.licenseList += libVersion;
-			this.licenseList += SEP_DELIMITER;
-
-			this.licenseList += licName;
-			this.licenseList += SEP_DELIMITER;
-
-			this.licenseList += NEW_LINE;
+			values[0] = libName;
+			values[1] = libVersion;
+			values[2] = licName;
+			this.licenseCSVList.add(values);
 		} catch (Exception ex) {
 			this.logger.log("prepareLicenseList error for " + libName + " : " + ex.getMessage());
 		}
@@ -817,17 +802,18 @@ public class Processor {
 
 	protected void generateOutputFiles(String auditRpt, String licList, String licText) {
 		try {
-			this.generateOutputFile(auditRpt, auditReport);
-			this.generateOutputFile(licList, licenseList);
+			this.generateCSVOutputFile(auditRpt, this.auditCSVList);
+			this.generateCSVOutputFile(licList, this.licenseCSVList);
 			this.generateOutputFile(licText, licenseText);
 		} catch (Exception ex) {
 			this.logger.log("generateOutputFiles error " + ex.getMessage());
 		}
 	}
 
-	protected void generateOutputFile(String fileName, String content) {
+	protected File getGeneratedFile(String fileName) {
+		File file = null;
 		try {
-			File file = new File(fileName);
+			file = new File(fileName);
 			// Get the Parent of the given file.
 			File parentFile = file.getParentFile();
 
@@ -837,12 +823,37 @@ public class Processor {
 			}
 			file.createNewFile();
 			this.logger.log("Generated " + file.getCanonicalPath());
+		} catch (Exception ex) {
+			this.logger.log("getGeneratedFile error: " + fileName + " " + ex.getMessage());
+		}
+		return file;
+	}
 
+	protected void generateOutputFile(String fileName, String content) {
+		try {
+			File file = this.getGeneratedFile(fileName);
 			FileOutputStream fileStream = new FileOutputStream(file, false);
 			fileStream.write(content.getBytes(StandardCharsets.UTF_8));
 			fileStream.close();
 		} catch (Exception ex) {
 			this.logger.log("generateOutputFile error: " + fileName + " " + ex.getMessage());
+		}
+	}
+	
+	protected void generateCSVOutputFile(String fileName, ArrayList<String[]> entries) {
+		try {
+			File file = this.getGeneratedFile(fileName);			
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(file), 
+										SEP_DELIMITER,
+										CSVWriter.DEFAULT_QUOTE_CHARACTER,
+										CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+										CSVWriter.DEFAULT_LINE_END);
+			for(String[] entry:entries) {
+				csvWriter.writeNext(entry, false);
+			}
+			csvWriter.close();
+		} catch (Exception ex) {
+			this.logger.log("generateCSVOutputFile error: " + fileName + " " + ex.getMessage());
 		}
 	}
 }

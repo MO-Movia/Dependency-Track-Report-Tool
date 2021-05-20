@@ -45,6 +45,12 @@
          <version>4.12</version>
          <scope>test</scope>
       </dependency>
+      <!-- OpenCSV -->
+      <dependency>
+         <groupId>com.opencsv</groupId>
+         <artifactId>opencsv</artifactId>
+         <version>5.4</version>
+      </dependency>
       <!-- SPDX -->
       <dependency>
          <groupId>org.spdx</groupId>
