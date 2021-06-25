@@ -108,8 +108,8 @@ public class ThirdPartyAuditNLicenseValidation {
 
 	private void doJOB() {
 		try {
-			final ApiClient apiClient = new ApiClient(this.restAPILoc, this.restAPIKey, this.logger);
-			final String result = apiClient.getDependencies(this.restAPIPID);
+			final ApiClient apiClient = new ApiClient(this.restAPILoc, this.restAPIKey, this.restAPIPID, this.logger);
+			final String result = apiClient.getDependencies();
 			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.noLicFix,
 					this.licTextI, apiClient);
 			processor.validateLibs(result);

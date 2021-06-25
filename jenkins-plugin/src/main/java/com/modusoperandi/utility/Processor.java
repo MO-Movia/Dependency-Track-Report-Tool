@@ -5,9 +5,7 @@ package com.modusoperandi.utility;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
-import javax.json.JsonValue;
 import javax.json.JsonArray;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -152,7 +150,7 @@ public class Processor {
 		}
 	}
 
-	private void prepareAuditReport(JsonObject jsonObj) {
+	private void prepareAuditReport(final JsonObject jsonLib) {
 		String libName = "";
 
 		try {
@@ -178,8 +176,6 @@ public class Processor {
 			// something in there, the text will still stand out:
 
 			final LibAudit libAudit = new LibAudit();
-
-			final JsonObject jsonLib = jsonObj.getJsonObject("component");
 
 			// library name
 			libName = jsonLib.getString("name");
@@ -272,7 +268,7 @@ public class Processor {
 			libAudit.isCompliant = this.isCompliant(libAudit, libName, licName, license);
 
 			// known vulnerabilities
-			libAudit.vulnerabilities = jsonObj.getJsonObject("metrics").getInt("vulnerabilities");
+			libAudit.vulnerabilities = jsonLib.getJsonObject("metrics").getInt("vulnerabilities");
 
 			this.auditList.add(libAudit);
 
@@ -337,7 +333,7 @@ public class Processor {
 			values[0] = XLS_HEADER;
 			this.auditCSVList.add(values);
 
-			values = new String[7];			
+			values = new String[7];
 			// library name
 			values[0] = "NAME";
 
@@ -391,7 +387,8 @@ public class Processor {
 			values[0] = libAudit.name;
 
 			// description
-			// prefix & suffix with double quotes to include any delimeters involved and thus the proper format is maintained correctly.
+			// prefix & suffix with double quotes to include any delimeters involved and
+			// thus the proper format is maintained correctly.
 			values[1] = (null != libAudit.description) ? libAudit.description : "";
 
 			// used version
@@ -449,15 +446,15 @@ public class Processor {
 	private String getVulnerabilitiesText(final int vulnerabilities) {
 		String text = "";
 		switch (vulnerabilities) {
-		case 0:
-			text = "None";
-			break;
-		case 1:
-			text = vulnerabilities + " Vulnerability";
-			break;
-		default:
-			text = vulnerabilities + " Vulnerabilities";
-			break;
+			case 0:
+				text = "None";
+				break;
+			case 1:
+				text = vulnerabilities + " Vulnerability";
+				break;
+			default:
+				text = vulnerabilities + " Vulnerabilities";
+				break;
 		}
 
 		return text;
@@ -839,16 +836,13 @@ public class Processor {
 			this.logger.log("generateOutputFile error: " + fileName + " " + ex.getMessage());
 		}
 	}
-	
+
 	protected void generateCSVOutputFile(String fileName, ArrayList<String[]> entries) {
 		try {
-			File file = this.getGeneratedFile(fileName);			
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(file), 
-										SEP_DELIMITER,
-										CSVWriter.DEFAULT_QUOTE_CHARACTER,
-										CSVWriter.DEFAULT_ESCAPE_CHARACTER,
-										CSVWriter.DEFAULT_LINE_END);
-			for(String[] entry:entries) {
+			File file = this.getGeneratedFile(fileName);
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(file), SEP_DELIMITER, CSVWriter.DEFAULT_QUOTE_CHARACTER,
+					CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+			for (String[] entry : entries) {
 				csvWriter.writeNext(entry, false);
 			}
 			csvWriter.close();

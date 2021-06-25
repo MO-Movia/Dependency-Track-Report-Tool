@@ -14,23 +14,29 @@ import java.nio.charset.StandardCharsets;
 public class ApiClient {
 
     private static final String API_KEY_HEADER = "X-Api-Key";
-    private static final String PROJECT_DEPENDENCIES_URL = "/api/v1/dependency/project";
+    private static final String PROJECT_DEPENDENCIES_URL = "/api/v1/component/project";
     private static final String LICENSE_URL = "/api/v1/license";
 
     private final String baseUrl;
     private final String apiKey;
+    private final String projectUuid;
     private final ConsoleLogger logger;
 
-    public ApiClient(final String baseUrl, final String apiKey, final ConsoleLogger logger) {
+    public ApiClient(final String baseUrl, final String apiKey, final String projectUuid, final ConsoleLogger logger) {
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
+        this.projectUuid = projectUuid;
         this.logger = logger;
     }
 
-    public String getDependencies(String projectUuid) throws ApiClientException {
+    public String getDependencies() throws ApiClientException {
         String optionalParams = "?sortOrder=asc&pageNumber=1&pageSize="
-                + getAPIResponseHeader(PROJECT_DEPENDENCIES_URL, projectUuid, "X-Total-Count");
-        return getAPIResponse(PROJECT_DEPENDENCIES_URL, projectUuid + optionalParams);
+                + getAPIResponseHeader(PROJECT_DEPENDENCIES_URL, this.projectUuid, "X-Total-Count");
+        return getAPIResponse(PROJECT_DEPENDENCIES_URL, this.projectUuid + optionalParams);
+    }
+
+    public int getCurrentMetrics(String componentUuid) throws ApiClientException {
+        return Integer.parseInt(getAPIResponse("/api/v1/metrics/component/" + componentUuid + "/current", projectUuid));
     }
 
     public String getLicense(String licenseID) throws ApiClientException {
