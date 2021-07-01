@@ -46,6 +46,7 @@ public class Processor {
 		protected boolean isCompliant;
 		protected boolean isCommercial;
 		protected int vulnerabilities;
+		protected String repoURL;
 
 		public LibAudit() {
 			isLatestVersion = false;
@@ -150,6 +151,27 @@ public class Processor {
 		}
 	}
 
+	private String prepareRepoURL(final JsonObject joRepo, final String libName) {
+		String repoURL = "";
+
+		try {
+			final String repoType = joRepo.getString("repositoryType");
+			final String namespace = joRepo.getString("namespace");
+			final String name = joRepo.getString("name");
+
+			switch (repoType) {
+				case "MAVEN":
+				default:
+					repoURL = "https://mvnrepository.com/artifact/" + namespace + "/" + name;
+					break;
+			}
+		} catch (NullPointerException ex) {
+			this.logger.log("prepareRepoURL error for " + libName + " : " + ex.getMessage());
+		}
+
+		return repoURL;
+	}
+
 	private void prepareAuditReport(final JsonObject jsonLib) {
 		String libName = "";
 
@@ -196,7 +218,9 @@ public class Processor {
 			// latest version
 			String libLatestVersion = "";
 			try {
-				libLatestVersion = jsonLib.getJsonObject("repositoryMeta").getString("latestVersion");
+				final JsonObject joRepo = jsonLib.getJsonObject("repositoryMeta");
+				libAudit.repoURL = this.prepareRepoURL(joRepo, libName);
+				libLatestVersion = joRepo.getString("latestVersion");
 			} catch (NullPointerException ex) {
 				this.logger.log("auditReport latestVersion error for " + libName + " : " + ex.getMessage());
 			}
@@ -333,7 +357,7 @@ public class Processor {
 			values[0] = XLS_HEADER;
 			this.auditCSVList.add(values);
 
-			values = new String[7];
+			values = new String[8];
 			// library name
 			values[0] = "NAME";
 
@@ -354,6 +378,9 @@ public class Processor {
 
 			// known vulnerabilities
 			values[6] = "VULNERABILITIES";
+
+			// Source Repository Link
+			values[7] = "REPOSITORY";
 
 			this.auditCSVList.add(values);
 		} catch (Exception ex) {
@@ -382,7 +409,7 @@ public class Processor {
 
 	private void prepareAuditReport(final LibAudit libAudit) {
 		try {
-			String[] values = new String[7];
+			String[] values = new String[8];
 			// library name
 			values[0] = libAudit.name;
 
@@ -426,6 +453,9 @@ public class Processor {
 			// known vulnerabilities
 			values[6] = this.getVulnerabilitiesText(libAudit.vulnerabilities);
 
+			// Soure repository link
+			values[7] = libAudit.repoURL;
+
 			this.auditCSVList.add(values);
 		} catch (Exception ex) {
 			this.logger.log("prepareAuditReport " + ex.getMessage());
@@ -450,10 +480,8 @@ public class Processor {
 				text = "None";
 				break;
 			case 1:
-				text = vulnerabilities + " Vulnerability";
-				break;
 			default:
-				text = vulnerabilities + " Vulnerabilities";
+				text = String.valueOf(vulnerabilities);
 				break;
 		}
 
