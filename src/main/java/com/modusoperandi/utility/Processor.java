@@ -30,6 +30,8 @@ import org.spdx.rdfparser.license.SpdxListedLicense;
 import org.spdx.rdfparser.license.ExtractedLicenseInfo;
 import org.spdx.rdfparser.license.WithExceptionOperator;
 import com.opencsv.CSVWriter;
+import com.github.packageurl.MalformedPackageURLException;
+import com.github.packageurl.PackageURL;
 
 public class Processor {
 
@@ -150,21 +152,21 @@ public class Processor {
 		}
 	}
 
-	private String prepareRepoURL(final JsonObject joRepo, final String libName) {
+	private String prepareRepoURL(final String purl, final String libName) {
 		String repoURL = "";
 
 		try {
-			final String repoType = joRepo.getString("repositoryType");
-			final String namespace = joRepo.getString("namespace");
-			final String name = joRepo.getString("name");
+			final PackageURL pkgUrl = new PackageURL(purl);
 
-			switch (repoType) {
-				case "MAVEN":
+			switch (pkgUrl.getType()) {
+				case PackageURL.StandardTypes.MAVEN:
+					repoURL = "https://mvnrepository.com/artifact/" + pkgUrl.getNamespace() + "/" + pkgUrl.getName();
+					break;
 				default:
-					repoURL = "https://mvnrepository.com/artifact/" + namespace + "/" + name;
+					repoURL = "/" + pkgUrl.getNamespace() + "/" + pkgUrl.getName();
 					break;
 			}
-		} catch (NullPointerException ex) {
+		} catch (MalformedPackageURLException ex) {
 			this.logger.log("prepareRepoURL error for " + libName + " : " + ex.getMessage());
 		}
 
@@ -218,7 +220,7 @@ public class Processor {
 			String libLatestVersion = "";
 			try {
 				final JsonObject joRepo = jsonLib.getJsonObject("repositoryMeta");
-				libAudit.repoURL = this.prepareRepoURL(joRepo, libName);
+				libAudit.repoURL = this.prepareRepoURL(jsonLib.getString("purl"), libName);
 				libLatestVersion = joRepo.getString("latestVersion");
 			} catch (NullPointerException ex) {
 				this.logger.log("auditReport latestVersion error for " + libName + " : " + ex.getMessage());
