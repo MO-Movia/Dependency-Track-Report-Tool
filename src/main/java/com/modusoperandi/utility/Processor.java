@@ -180,17 +180,30 @@ public class Processor {
 
 	private String prepareRepoURL(final String purl, final String libName) {
 		String repoURL = "";
+		String mainURL = "";
+		String namespace = "";
 
 		try {
 			final PackageURL pkgUrl = new PackageURL(purl);
 
 			switch (pkgUrl.getType()) {
 				case PackageURL.StandardTypes.MAVEN:
-					repoURL = "https://mvnrepository.com/artifact/" + pkgUrl.getNamespace() + "/" + pkgUrl.getName();
+					mainURL = "https://mvnrepository.com/artifact/";
+					break;
+				case PackageURL.StandardTypes.NPM:
+					mainURL = "https://www.npmjs.com/package/";
 					break;
 				default:
-					repoURL = "/" + pkgUrl.getNamespace() + "/" + pkgUrl.getName();
+					mainURL = "/";
 					break;
+			}
+
+			namespace = pkgUrl.getNamespace();
+
+			if (null != namespace) {
+				repoURL = mainURL + namespace + "/" + pkgUrl.getName();
+			} else {
+				repoURL = mainURL + pkgUrl.getName();
 			}
 		} catch (MalformedPackageURLException ex) {
 			this.logger.log("prepareRepoURL error for " + libName + " : " + ex.getMessage());
@@ -234,7 +247,8 @@ public class Processor {
 			// https://github.com/DependencyTrack/dependency-track/issues/746)
 			try {
 				// remove line feeds so that when sorted the row is not resized.
-				libAudit.description = jsonLib.getString("description").replace("\r\n", " ").replace("\n", " ").replace("\r", " ");
+				libAudit.description = jsonLib.getString("description").replace("\r\n", " ").replace("\n", " ")
+						.replace("\r", " ");
 			} catch (NullPointerException ex) {
 				this.logger.log("auditReport description error for " + libName + " : " + ex.getMessage());
 			}
@@ -512,7 +526,7 @@ public class Processor {
 
 	private String getVulnerabilitiesText(final Vulnerabilities vulnerabilities) {
 		String text = "";
-		if(0 == vulnerabilities.total) {
+		if (0 == vulnerabilities.total) {
 			text = "None";
 		} else {
 			text = String.valueOf(vulnerabilities.critical) + " Critical, ";
