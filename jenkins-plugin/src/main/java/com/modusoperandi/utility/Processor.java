@@ -36,6 +36,15 @@ import com.github.packageurl.PackageURL;
 
 public class Processor {
 
+	private class Vulnerabilities {
+		protected int critical;
+		protected int high;
+		protected int medium;
+		protected int low;
+		protected int unassigned;
+		protected int total;
+	}
+
 	private class LibAudit {
 		protected String name;
 		protected String description;
@@ -47,7 +56,7 @@ public class Processor {
 		protected boolean isValidLicense;
 		protected boolean isCompliant;
 		protected boolean isCommercial;
-		protected int vulnerabilities;
+		protected Vulnerabilities vulnerabilities;
 		protected String repoURL;
 
 		public LibAudit() {
@@ -55,6 +64,7 @@ public class Processor {
 			isValidLicense = false;
 			isCompliant = false;
 			isCommercial = false;
+			vulnerabilities = new Vulnerabilities();
 		}
 	}
 
@@ -66,7 +76,23 @@ public class Processor {
 		public int compare(LibAudit a, LibAudit b) {
 			int c = 0;
 
-			c = (b.vulnerabilities - a.vulnerabilities);
+			c = (b.vulnerabilities.total - a.vulnerabilities.total);
+
+			if (0 == c) {
+				c = (b.vulnerabilities.critical - a.vulnerabilities.critical);
+				if (0 == c) {
+					c = (b.vulnerabilities.high - a.vulnerabilities.high);
+					if (0 == c) {
+						c = (b.vulnerabilities.medium - a.vulnerabilities.medium);
+						if (0 == c) {
+							c = (b.vulnerabilities.low - a.vulnerabilities.low);
+							if (0 == c) {
+								c = (b.vulnerabilities.unassigned - a.vulnerabilities.unassigned);
+							}
+						}
+					}
+				}
+			}
 
 			// The Valid License column contains all the information we need about the
 			// license –
@@ -208,7 +234,8 @@ public class Processor {
 			// description - (Right now dependency-track doesn't return description -
 			// https://github.com/DependencyTrack/dependency-track/issues/746)
 			try {
-				libAudit.description = jsonLib.getString("description");
+				// remove line feeds so that when sorted the row is not resized.
+				libAudit.description = jsonLib.getString("description").replace("\r\n", " ").replace("\n", " ").replace("\r", " ");
 			} catch (NullPointerException ex) {
 				this.logger.log("auditReport description error for " + libName + " : " + ex.getMessage());
 			}
@@ -294,7 +321,7 @@ public class Processor {
 			libAudit.isCompliant = this.isCompliant(libAudit, libName, licName, license);
 
 			// known vulnerabilities
-			libAudit.vulnerabilities = jsonLib.getJsonObject("metrics").getInt("vulnerabilities");
+			this.prepareVulnerabilities(libAudit, jsonLib.getJsonObject("metrics"));
 
 			this.auditList.add(libAudit);
 
@@ -302,6 +329,15 @@ public class Processor {
 		} catch (Exception ex) {
 			this.logger.log("auditReport error for " + libName + " : " + ex.getMessage());
 		}
+	}
+
+	private void prepareVulnerabilities(final LibAudit libAudit, final JsonObject joMetrics) {
+		libAudit.vulnerabilities.total = joMetrics.getInt("vulnerabilities");
+		libAudit.vulnerabilities.critical = joMetrics.getInt("critical");
+		libAudit.vulnerabilities.high = joMetrics.getInt("high");
+		libAudit.vulnerabilities.medium = joMetrics.getInt("medium");
+		libAudit.vulnerabilities.low = joMetrics.getInt("low");
+		libAudit.vulnerabilities.unassigned = joMetrics.getInt("unassigned");
 	}
 
 	private boolean parseAnyLicenseInfo(final AnyLicenseInfo licenseInfo, final String libName) {
@@ -475,16 +511,16 @@ public class Processor {
 		}
 	}
 
-	private String getVulnerabilitiesText(final int vulnerabilities) {
+	private String getVulnerabilitiesText(final Vulnerabilities vulnerabilities) {
 		String text = "";
-		switch (vulnerabilities) {
-			case 0:
-				text = "None";
-				break;
-			case 1:
-			default:
-				text = String.valueOf(vulnerabilities);
-				break;
+		if(0 == vulnerabilities.total) {
+			text = "None";
+		} else {
+			text = String.valueOf(vulnerabilities.critical) + " Critical, ";
+			text += String.valueOf(vulnerabilities.high) + " High, ";
+			text += String.valueOf(vulnerabilities.medium) + " Medium, ";
+			text += String.valueOf(vulnerabilities.low) + " Low, ";
+			text += String.valueOf(vulnerabilities.unassigned) + " Unassigned";
 		}
 
 		return text;
