@@ -334,7 +334,7 @@ public class Processor {
 			libAudit.isCompliant = this.isCompliant(libAudit, libName, licName, license);
 
 			// known vulnerabilities
-			this.prepareVulnerabilities(libAudit, jsonLib.getJsonObject("metrics"));
+			this.prepareVulnerabilities(libAudit, jsonLib.getJsonObject("metrics"), libName);
 
 			this.auditList.add(libAudit);
 
@@ -344,13 +344,17 @@ public class Processor {
 		}
 	}
 
-	private void prepareVulnerabilities(final LibAudit libAudit, final JsonObject joMetrics) {
-		libAudit.vulnerabilities.total = joMetrics.getInt("vulnerabilities");
-		libAudit.vulnerabilities.critical = joMetrics.getInt("critical");
-		libAudit.vulnerabilities.high = joMetrics.getInt("high");
-		libAudit.vulnerabilities.medium = joMetrics.getInt("medium");
-		libAudit.vulnerabilities.low = joMetrics.getInt("low");
-		libAudit.vulnerabilities.unassigned = joMetrics.getInt("unassigned");
+	private void prepareVulnerabilities(final LibAudit libAudit, final JsonObject joMetrics, final String libName) {
+		try {
+			libAudit.vulnerabilities.total = joMetrics.getInt("vulnerabilities");
+			libAudit.vulnerabilities.critical = joMetrics.getInt("critical");
+			libAudit.vulnerabilities.high = joMetrics.getInt("high");
+			libAudit.vulnerabilities.medium = joMetrics.getInt("medium");
+			libAudit.vulnerabilities.low = joMetrics.getInt("low");
+			libAudit.vulnerabilities.unassigned = joMetrics.getInt("unassigned");
+		} catch (Exception ex) {
+			this.logger.log("prepareVulnerabilities error for " + libName + " : " + ex.getMessage());
+		}
 	}
 
 	private boolean parseAnyLicenseInfo(final AnyLicenseInfo licenseInfo, final String libName) {
