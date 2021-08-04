@@ -130,6 +130,8 @@ public class Processor {
 	private static final String OK_TEXT = "Yes";
 	private static final String SEP_INPUT = " -> ";
 	private static final String XLS_HEADER = "sep=" + SEP_DELIMITER;
+	private static final String MOP = "Modus Operandi Proprietary";
+	private static final String NA = "NA";
 
 	private final ConsoleLogger logger;
 	private final String appovedLic;
@@ -202,7 +204,11 @@ public class Processor {
 			namespace = pkgUrl.getNamespace();
 
 			if (null != namespace) {
-				repoURL = mainURL + namespace + "/" + pkgUrl.getName();
+				if (namespace.equals("@mo")) {
+					repoURL = MOP;
+				} else {
+					repoURL = mainURL + namespace + "/" + pkgUrl.getName();
+				}
 			} else {
 				repoURL = mainURL + pkgUrl.getName();
 			}
@@ -477,11 +483,18 @@ public class Processor {
 			// used version
 			values[2] = libAudit.usedVersion;
 
-			// latest version
-			values[3] = libAudit.latestVersion;
-
-			// Not latest version Flag
-			values[4] = libAudit.isLatestVersion ? OK_TEXT : "Not Latest";
+			// Handle Modus Components
+			if (libAudit.repoURL.equals(MOP)) {
+				// latest version
+				values[3] = NA;
+				// Not latest version Flag
+				values[4] = NA;
+			} else {
+				// latest version
+				values[3] = libAudit.latestVersion;
+				// Not latest version Flag
+				values[4] = libAudit.isLatestVersion ? OK_TEXT : "Not Latest";
+			}
 
 			// The Valid License column contains all the information we need about the
 			// license –
