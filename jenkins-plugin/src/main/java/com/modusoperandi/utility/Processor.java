@@ -131,7 +131,7 @@ public class Processor {
 	private static final String SEP_INPUT = " -> ";
 	private static final String XLS_HEADER = "sep=" + SEP_DELIMITER;
 	private static final String MOP = "Modus Operandi Proprietary";
-	private static final String NA = "NA";
+	private static final String NA = "N/A";
 
 	private final ConsoleLogger logger;
 	private final String appovedLic;
