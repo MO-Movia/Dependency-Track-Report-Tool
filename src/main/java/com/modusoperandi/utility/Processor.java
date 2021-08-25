@@ -203,7 +203,12 @@ public class Processor {
 			namespace = pkgUrl.getNamespace();
 
 			if (null != namespace) {
-				if (namespace.equals("@mo")) {
+				if (
+					// For NPM repo
+					namespace.equals("@mo") ||
+					// For MVN Repo
+					namespace.startsWith("com.modusoperandi.")
+				) {
 					repoURL = MOP;
 				} else {
 					repoURL = mainURL + namespace + "/" + pkgUrl.getName();
