@@ -30,4 +30,10 @@
     <f:entry title="${%License Text}" field="licText">
         <f:textbox default="${descriptor.defaultLicText}"/>
     </f:entry>
+    <f:entry title="${%MVN Repository for MO}" field="mvnRepo">
+        <f:textbox default="${descriptor.defaultMVNRepo}"/>
+    </f:entry>
+    <f:entry title="${%NPM Repository for MO}" field="npmRepo">
+        <f:textbox default="${descriptor.defaultNPMRepo}"/>
+    </f:entry>
 </j:jelly>

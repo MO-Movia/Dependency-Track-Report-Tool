@@ -139,6 +139,8 @@ public class Processor {
 	private final String noLicFix;
 	private final String licTextInput;
 	private final ApiClient apiClient;
+	private final String mvnRepo;
+	private final String npmRepo;
 
 	private String licenseText = "";
 	private String[] approvedLicenses = null;
@@ -151,13 +153,15 @@ public class Processor {
 	private ArrayList<String[]> licenseCSVList = null;
 
 	public Processor(final ConsoleLogger logger, final String appovedLic, final String licXlate, final String noLicFix,
-			final String licTextInput, final ApiClient apiClient) {
+			final String licTextInput, final ApiClient apiClient, final String mvnRepo, final String npmRepo) {
 		this.logger = logger;
 		this.appovedLic = appovedLic;
 		this.licXlate = licXlate;
 		this.noLicFix = noLicFix;
 		this.licTextInput = licTextInput;
 		this.apiClient = apiClient;
+		this.mvnRepo = mvnRepo;
+		this.npmRepo = npmRepo;
 	}
 
 	protected void validateLibs(final String result) {
@@ -206,9 +210,9 @@ public class Processor {
 			if (null != namespace) {
 				if (
 					// For NPM repo
-					namespace.equals("@mo") ||
+					namespace.equals(this.npmRepo) ||
 					// For MVN Repo
-					namespace.startsWith("com.modusoperandi.")
+					namespace.startsWith(this.mvnRepo)
 				) {
 					repoURL = MOP;
 				} else {

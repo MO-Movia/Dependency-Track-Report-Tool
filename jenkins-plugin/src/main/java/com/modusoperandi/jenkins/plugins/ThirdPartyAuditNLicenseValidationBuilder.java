@@ -58,10 +58,14 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 
     private String licText = DescriptorImpl.defaultLicText;
 
+    private String mvnRepo = DescriptorImpl.defaultMVNRepo;
+
+    private String npmRepo = DescriptorImpl.defaultNPMRepo;
+
     @DataBoundConstructor
     public ThirdPartyAuditNLicenseValidationBuilder(final String restAPILoc, final String restAPIKey,
             final String restAPIPID, final String appovedLic, final String licXlate, final String noLicFix,
-            final String auditRpt, final String licList, final String licText, final String licTextInput) {
+            final String auditRpt, final String licList, final String licText, final String licTextInput, final String mvnRepo, final String npmRepo) {
         this.restAPILoc = restAPILoc;
         this.restAPIKey = restAPIKey;
         this.restAPIPID = restAPIPID;
@@ -72,6 +76,8 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
         this.auditRpt = auditRpt;
         this.licList = licList;
         this.licText = licText;
+        this.mvnRepo = mvnRepo;
+        this.npmRepo = npmRepo;
     }
 
     @DataBoundSetter
@@ -174,6 +180,26 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
         return licText;
     }
 
+    @DataBoundSetter
+    public void setMVNRepo(@NonNull String mvnRepo) {
+        this.mvnRepo = mvnRepo;
+    }
+
+    @NonNull
+    public String getMVNrepo() {
+        return mvnRepo;
+    }
+
+    @DataBoundSetter
+    public void setNPMRepo(@NonNull String npmRepo) {
+        this.npmRepo = npmRepo;
+    }
+
+    @NonNull
+    public String getNPMrepo() {
+        return npmRepo;
+    }
+
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
             throws InterruptedException, IOException {
@@ -227,7 +253,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
 
         if (null != tpalvu) {
             tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedNoLicFix,
-                    parsedAuditRpt, parsedLicList, parsedLicText, parsedLicTextInput);
+                    parsedAuditRpt, parsedLicList, parsedLicText, parsedLicTextInput, mvnRepo, npmRepo);
         }
     }
 
@@ -245,6 +271,8 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
         public static final String defaultAuditRpt = "${WORKSPACE}\\outputs\\movia_audit_out.csv";
         public static final String defaultLicList = "${WORKSPACE}\\outputs\\movia_license_list.csv";
         public static final String defaultLicText = "${WORKSPACE}\\outputs\\movia_license_text.txt";
+        public static final String defaultMVNRepo = "@mo";
+        public static final String defaultNPMRepo = "com.modusoperandi.";
 
         public FormValidation doCheckRestAPILoc(@QueryParameter String value) throws IOException, ServletException {
             return PluginUtil.doCheckUrl(value);

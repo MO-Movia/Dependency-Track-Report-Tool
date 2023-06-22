@@ -41,6 +41,10 @@ public class ThirdPartyAuditNLicenseValidation {
 
 	private String licText;
 
+	private String mvnRepo;
+
+	private String npmRepo;
+
 	/**
 	 * OutputStream Logger
 	 */
@@ -52,7 +56,7 @@ public class ThirdPartyAuditNLicenseValidation {
 
 	public void initialize(final String restAPILoc, final String restAPIKey, final String restAPIPID,
 			final String appovedLic, final String licXlate, final String noLicFix, final String auditRpt,
-			final String licList, final String licText, final String licTextI) {
+			final String licList, final String licText, final String licTextI, final String mvnRepo, final String npmRepo) {
 		setRestAPILoc(restAPILoc);
 		setRestAPIKey(restAPIKey);
 		setRestAPIPID(restAPIPID);
@@ -63,6 +67,8 @@ public class ThirdPartyAuditNLicenseValidation {
 		setAuditRpt(auditRpt);
 		setLicList(licList);
 		setLicText(licText);
+		setMVNRepo(mvnRepo);
+		setNPMRepo(npmRepo);
 		doJOB();
 	}
 
@@ -106,12 +112,20 @@ public class ThirdPartyAuditNLicenseValidation {
 		this.licText = (null == this.licText) ? licText : this.licText;
 	}
 
+	private void setMVNRepo(final String mvnRepo) {
+		this.mvnRepo = (null == this.mvnRepo) ? mvnRepo : this.mvnRepo;
+	}
+
+	private void setNPMRepo(final String npmRepo) {
+		this.npmRepo = (null == this.npmRepo) ? npmRepo : this.npmRepo;
+	}
+
 	private void doJOB() {
 		try {
 			final ApiClient apiClient = new ApiClient(this.restAPILoc, this.restAPIKey, this.restAPIPID, this.logger);
 			final String result = apiClient.getDependencies();
 			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.noLicFix,
-					this.licTextI, apiClient);
+					this.licTextI, apiClient, this.mvnRepo, this.npmRepo);
 			processor.validateLibs(result);
 			processor.generateOutputFiles(this.auditRpt, this.licList, this.licText);
 

@@ -62,6 +62,8 @@ Available configurations are:
 | -R | File path of the Audit report csv |
 | -L | File path of the unique License list  |
 | -T | File path of the License Text|
+| -M | MVN repository for MO |
+| -N | NPM repository for MO |
 | -? | print help message  |
 
  

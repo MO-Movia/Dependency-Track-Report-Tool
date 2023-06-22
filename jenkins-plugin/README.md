@@ -66,6 +66,8 @@ From the cloned folder run
 | Audit Report |File path of the *movia_audit_out.csv* in the *outputs*  folder   | ${WORKSPACE}\\outputs\\movia_audit_out.csv |
 | License List |File path of the *movia_license_list.csv* in the *outputs*  folder   | ${WORKSPACE}\\outputs\\movia_license_list.csv |
 | License Text |File path of the *movia_license_text.txt* in the *outputs*  folder| ${WORKSPACE}\\outputs\\movia_license_text.txt |
+| MVN Repository for MO |MVN Repository for MO| com.modusoperandi. |
+| NPM Repository for MO |NPM Repository for MO| @mo |
 
 **NOTE: Make sure to replace the below default values with a valid one:**
  - **Dependency Track URL**

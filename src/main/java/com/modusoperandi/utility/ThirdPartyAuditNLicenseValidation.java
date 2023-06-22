@@ -40,6 +40,10 @@ public class ThirdPartyAuditNLicenseValidation {
 
 	private String licText;
 
+	private String mvnRepo;
+
+	private String npmRepo;
+
 	/**
 	 * OutputStream Logger
 	 */
@@ -55,6 +59,8 @@ public class ThirdPartyAuditNLicenseValidation {
 	private static final String DEF_AUDITRPT = "movia_audit_out.csv";
 	private static final String DEF_LICLIST = "movia_license_list.csv";
 	private static final String DEF_LICTEXT = "movia_license_text.txt";
+	private static final String DEF_MOMVNREPO = "com.modusoperandi.";		
+	private static final String DEF_MONPMREPO = "@mo";
 
 	public ThirdPartyAuditNLicenseValidation(String[] args) {
 		initLogger();
@@ -66,7 +72,7 @@ public class ThirdPartyAuditNLicenseValidation {
 
 	public ThirdPartyAuditNLicenseValidation(final String restAPILoc, final String restAPIKey, final String restAPIPID,
 			final String appovedLic, final String licXlate, final String noLicFix, final String auditRpt,
-			final String licList, final String licText, final String licTextI) {
+			final String licList, final String licText, final String licTextI, final String mvnRepo, final String npmRepo) {
 		initLogger();
 		setRestAPILoc(restAPILoc);
 		setRestAPIKey(restAPIKey);
@@ -78,6 +84,8 @@ public class ThirdPartyAuditNLicenseValidation {
 		setAuditRpt(auditRpt);
 		setLicList(licList);
 		setLicText(licText);
+		setMVNRepo(mvnRepo);
+		setNPMRepo(npmRepo);
 		loadProperties();
 		doJOB();
 	}
@@ -136,6 +144,14 @@ public class ThirdPartyAuditNLicenseValidation {
 		this.licText = (null == this.licText) ? licText : this.licText;
 	}
 
+	private void setMVNRepo(final String mvnRepo) {
+		this.mvnRepo = (null == this.mvnRepo) ? mvnRepo : this.mvnRepo;
+	}
+
+	private void setNPMRepo(final String npmRepo) {
+		this.npmRepo = (null == this.npmRepo) ? npmRepo : this.npmRepo;
+	}
+
 	private boolean readArguments(String[] args) {
 		boolean process = true;
 
@@ -175,6 +191,12 @@ public class ThirdPartyAuditNLicenseValidation {
 					case 'T':
 						this.setLicText(arg.substring(3));
 						break;
+					case 'M':
+						this.setMVNRepo(arg.substring(3));
+						break;
+					case 'N':
+						this.setNPMRepo(arg.substring(3));
+						break;						
 					case '?':
 						process = false;
 						this.displayHelp();
@@ -197,7 +219,7 @@ public class ThirdPartyAuditNLicenseValidation {
 
 	private void displayHelp() {
 		this.logger.log0(
-				"Usage: java -jar utility.tpalv-1.0.0-standalone.jar [-configurations]\r\nwhere each configuration is in the format -<configuration>=<value> and seperated by a space\r\n\r\nAvailable configurations are:\r\n\t-U\tDependency Track Rest API URL.\r\n\t-K\tDependency Track Rest API Key.\r\n\t-I\tDependency Track Project ID.\r\n\t-A\tFile path of the Approved Licenses.\r\n\t-X\tFile path of the License Translations.\r\n\t-F\tFile path of the No License Fix.\r\n\t-S\tFile path of the License Text Input.\r\n\t-R\tFile path of the Audit report csv.\r\n\t-L\tFile path of the unique License list.\r\n\t-T\tFile path of the License Text.\r\n\t-?\tprint help message.");
+				"Usage: java -jar utility.tpalv-1.0.0-standalone.jar [-configurations]\r\nwhere each configuration is in the format -<configuration>=<value> and seperated by a space\r\n\r\nAvailable configurations are:\r\n\t-U\tDependency Track Rest API URL.\r\n\t-K\tDependency Track Rest API Key.\r\n\t-I\tDependency Track Project ID.\r\n\t-A\tFile path of the Approved Licenses.\r\n\t-X\tFile path of the License Translations.\r\n\t-F\tFile path of the No License Fix.\r\n\t-S\tFile path of the License Text Input.\r\n\t-R\tFile path of the Audit report csv.\r\n\t-L\tFile path of the unique License list.\r\n\t-T\tFile path of the License Text.\r\n\t-M\tMVN repository for MO.\r\n\t-N\tNPM repository for MO.\r\n\t-?\tprint help message.");
 	}
 
 	private void loadProperties() {
@@ -228,6 +250,10 @@ public class ThirdPartyAuditNLicenseValidation {
 			this.setLicList(props.getProperty("LICENSE_LIST", DEF_LICLIST));
 
 			this.setLicText(props.getProperty("LICENSE_TEXT", DEF_LICTEXT));
+			
+			this.setMVNRepo(props.getProperty("MO_MVN_REPO", DEF_MOMVNREPO));
+			
+			this.setNPMRepo(props.getProperty("MO_NPM_REPO", DEF_MONPMREPO));						
 
 			reader.close();
 		} catch (FileNotFoundException ex) {
@@ -250,6 +276,8 @@ public class ThirdPartyAuditNLicenseValidation {
 		this.logger.log("\r\nAUDIT_RPT: " + this.auditRpt);
 		this.logger.log("\r\nLICENSE_LIST: " + this.licList);
 		this.logger.log("\r\nLICENSE_TEXT: " + this.licText);
+		this.logger.log("\r\nMO_MVN_REPO: " + this.mvnRepo);
+		this.logger.log("\r\nMO_NPM_REPO: " + this.npmRepo);				
 	}
 
 	private void setDefaultValues() {
@@ -265,6 +293,8 @@ public class ThirdPartyAuditNLicenseValidation {
 		this.setAuditRpt(DEF_AUDITRPT);
 		this.setLicList(DEF_LICLIST);
 		this.setLicText(DEF_LICTEXT);
+		this.setMVNRepo(DEF_MOMVNREPO);
+		this.setNPMRepo(DEF_MONPMREPO);				
 	}
 
 	private void doJOB() {
@@ -272,7 +302,7 @@ public class ThirdPartyAuditNLicenseValidation {
 			final ApiClient apiClient = new ApiClient(this.restAPILoc, this.restAPIKey, this.restAPIPID, this.logger);
 			final String result = apiClient.getDependencies();
 			Processor processor = new Processor(this.logger, this.appovedLic, this.licXlate, this.noLicFix,
-					this.licTextI, apiClient);
+					this.licTextI, apiClient, this.mvnRepo, this.npmRepo);
 			processor.validateLibs(result);
 			processor.generateOutputFiles(this.auditRpt, this.licList, this.licText);
 
