@@ -33,45 +33,54 @@ import com.modusoperandi.utility.ThirdPartyAuditNLicenseValidation;
 public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements SimpleBuildStep {
 
     /**
-	 * Dependency-Track API URL
-	 */
-	private String restAPILoc = DescriptorImpl.defaultRestAPILoc;
-	
-	/**
-	 * Dependency-Track API KEY
-	 */
-	private String restAPIKey = DescriptorImpl.defaultRestAPIKey;
-	
-	private String restAPIPID = DescriptorImpl.defaultRestAPIPID;
+     * Dependency-Track API URL
+     */
+    private String restAPILoc = DescriptorImpl.defaultRestAPILoc;
 
-	private String licXlate = DescriptorImpl.defaultLicXlate;
+    /**
+     * Dependency-Track API KEY
+     */
+    private String restAPIKey = DescriptorImpl.defaultRestAPIKey;
 
-	private String appovedLic = DescriptorImpl.defaultAppovedLic;
+    private String restAPIPID = DescriptorImpl.defaultRestAPIPID;
 
-	private String whiteList = DescriptorImpl.defaultWhiteList;
+    private String licXlate = DescriptorImpl.defaultLicXlate;
 
-	private String auditRpt = DescriptorImpl.defaultAuditRpt;
+    private String appovedLic = DescriptorImpl.defaultAppovedLic;
 
-	private String licList = DescriptorImpl.defaultLicList;
+    private String noLicFix = DescriptorImpl.defaultNoLicFix;
 
-	private String licText = DescriptorImpl.defaultLicText;
+    private String licTextInput = DescriptorImpl.defaultLicTextInput;
+
+    private String auditRpt = DescriptorImpl.defaultAuditRpt;
+
+    private String licList = DescriptorImpl.defaultLicList;
+
+    private String licText = DescriptorImpl.defaultLicText;
+
+    private String mvnRepo = DescriptorImpl.defaultMVNRepo;
+
+    private String npmRepo = DescriptorImpl.defaultNPMRepo;
 
     @DataBoundConstructor
-    public ThirdPartyAuditNLicenseValidationBuilder (final String restAPILoc, final String restAPIKey, final String restAPIPID, 
-											final String appovedLic, final String licXlate, final String whiteList, 
-											final String auditRpt, final String licList, final String licText) {
+    public ThirdPartyAuditNLicenseValidationBuilder(final String restAPILoc, final String restAPIKey,
+            final String restAPIPID, final String appovedLic, final String licXlate, final String noLicFix,
+            final String auditRpt, final String licList, final String licText, final String licTextInput, final String mvnRepo, final String npmRepo) {
         this.restAPILoc = restAPILoc;
         this.restAPIKey = restAPIKey;
         this.restAPIPID = restAPIPID;
         this.appovedLic = appovedLic;
         this.licXlate = licXlate;
-        this.whiteList = whiteList;
+        this.noLicFix = noLicFix;
+        this.licTextInput = licTextInput;
         this.auditRpt = auditRpt;
         this.licList = licList;
         this.licText = licText;
+        this.mvnRepo = mvnRepo;
+        this.npmRepo = npmRepo;
     }
-	
-	@DataBoundSetter
+
+    @DataBoundSetter
     public void setRestAPILoc(@NonNull String restAPILoc) {
         this.restAPILoc = restAPILoc;
     }
@@ -85,8 +94,8 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     public void setRestAPIKey(@NonNull String restAPIKey) {
         this.restAPIKey = restAPIKey;
     }
-    
-    @NonNull	
+
+    @NonNull
     public String getRestAPIKey() {
         return restAPIKey;
     }
@@ -95,7 +104,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     public void setRestAPIPID(@NonNull String restAPIPID) {
         this.restAPIPID = restAPIPID;
     }
-    
+
     @NonNull
     public String getRestAPIPID() {
         return restAPIPID;
@@ -105,7 +114,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     public void setAppovedLic(@NonNull String appovedLic) {
         this.appovedLic = appovedLic;
     }
-    
+
     @NonNull
     public String getAppovedLic() {
         return appovedLic;
@@ -115,27 +124,37 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     public void setLicXlate(@NonNull String licXlate) {
         this.licXlate = licXlate;
     }
-    
+
     @NonNull
     public String getLicXlate() {
         return licXlate;
     }
 
     @DataBoundSetter
-    public void setWhiteList(@NonNull String whiteList) {
-        this.whiteList = whiteList;
+    public void setNoLicFix(@NonNull String noLicFix) {
+        this.noLicFix = noLicFix;
     }
-    
+
     @NonNull
-    public String getWhiteList() {
-        return whiteList;
+    public String getNoLicFix() {
+        return noLicFix;
+    }
+
+    @DataBoundSetter
+    public void setLicTextInput(@NonNull String licTextInput) {
+        this.licTextInput = licTextInput;
+    }
+
+    @NonNull
+    public String getLicTextInput() {
+        return licTextInput;
     }
 
     @DataBoundSetter
     public void setAuditRpt(@NonNull String auditRpt) {
         this.auditRpt = auditRpt;
     }
-    
+
     @NonNull
     public String getAuditRpt() {
         return auditRpt;
@@ -145,7 +164,7 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     public void setLicList(@NonNull String licList) {
         this.licList = licList;
     }
-    
+
     @NonNull
     public String getLicList() {
         return licList;
@@ -155,93 +174,123 @@ public class ThirdPartyAuditNLicenseValidationBuilder extends Builder implements
     public void setLicText(@NonNull String licText) {
         this.licText = licText;
     }
-    
+
     @NonNull
     public String getLicText() {
         return licText;
     }
 
+    @DataBoundSetter
+    public void setMVNRepo(@NonNull String mvnRepo) {
+        this.mvnRepo = mvnRepo;
+    }
+
+    @NonNull
+    public String getMVNrepo() {
+        return mvnRepo;
+    }
+
+    @DataBoundSetter
+    public void setNPMRepo(@NonNull String npmRepo) {
+        this.npmRepo = npmRepo;
+    }
+
+    @NonNull
+    public String getNPMrepo() {
+        return npmRepo;
+    }
+
     @Override
-    public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-		ConsoleLogger cLogger = new ConsoleLogger(listener);
-		ThirdPartyAuditNLicenseValidation tpalvu = new ThirdPartyAuditNLicenseValidation(cLogger);
-		
-		// Parse and process config
-		EnvVars envVars = null;
-		StringBuilder parsedPath = new StringBuilder("");
-		String parsedAppovedLic = appovedLic;
-		String parsedLicXlate = licXlate;
-		String parsedWhiteList = whiteList;
-		String parsedAuditRpt = auditRpt;
-		String parsedLicList = licList;
-		String parsedLicText = licText;
-		
-		envVars = run.getEnvironment(listener);
-		
+    public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
+            throws InterruptedException, IOException {
+        ConsoleLogger cLogger = new ConsoleLogger(listener);
+        ThirdPartyAuditNLicenseValidation tpalvu = new ThirdPartyAuditNLicenseValidation(cLogger);
+
+        // Parse and process config
+        EnvVars envVars = null;
+        StringBuilder parsedPath = new StringBuilder("");
+        String parsedAppovedLic = appovedLic;
+        String parsedLicXlate = licXlate;
+        String parsedNoLicFix = noLicFix;
+        String parsedLicTextInput = licTextInput;
+        String parsedAuditRpt = auditRpt;
+        String parsedLicList = licList;
+        String parsedLicText = licText;
+
+        envVars = run.getEnvironment(listener);
+
         if (null != envVars) {
-				
-			if(PluginUtil.parseFilePath(appovedLic, envVars, parsedPath)) {
-				parsedAppovedLic = parsedPath.toString();
-				cLogger.log("ParsedAppovedLicPath: " + parsedAppovedLic);
-			}
-			if(PluginUtil.parseFilePath(licXlate, envVars, parsedPath)) {
-				parsedLicXlate = parsedPath.toString();
-				cLogger.log("ParsedLicXlatePath: " + parsedLicXlate);
-			}
-			if(PluginUtil.parseFilePath(whiteList, envVars, parsedPath)) {
-				parsedWhiteList = parsedPath.toString();
-				cLogger.log("ParsedWhiteListPath: " + parsedWhiteList);
-			}
-			if(PluginUtil.parseFilePath(auditRpt, envVars, parsedPath)) {
-				parsedAuditRpt = parsedPath.toString();
-				cLogger.log("ParsedAuditRptPath: " + parsedAuditRpt);
-			}
-			if(PluginUtil.parseFilePath(licList, envVars, parsedPath)) {
-				parsedLicList = parsedPath.toString();
-				cLogger.log("ParsedLicListPath: " + parsedLicList);
-			}
-			if(PluginUtil.parseFilePath(licText, envVars, parsedPath)) {
-				parsedLicText = parsedPath.toString();
-				cLogger.log("ParsedLicTextPath: " + parsedLicText);
-			}
+
+            if (PluginUtil.parseFilePath(appovedLic, envVars, parsedPath)) {
+                parsedAppovedLic = parsedPath.toString();
+                cLogger.log("ParsedAppovedLicPath: " + parsedAppovedLic);
+            }
+            if (PluginUtil.parseFilePath(licXlate, envVars, parsedPath)) {
+                parsedLicXlate = parsedPath.toString();
+                cLogger.log("ParsedLicXlatePath: " + parsedLicXlate);
+            }
+            if (PluginUtil.parseFilePath(noLicFix, envVars, parsedPath)) {
+                parsedNoLicFix = parsedPath.toString();
+                cLogger.log("ParsedNoLicFixPath: " + parsedNoLicFix);
+            }
+            if (PluginUtil.parseFilePath(licTextInput, envVars, parsedPath)) {
+                parsedLicTextInput = parsedPath.toString();
+                cLogger.log("ParsedLicTextInput: " + parsedLicTextInput);
+            }
+            if (PluginUtil.parseFilePath(auditRpt, envVars, parsedPath)) {
+                parsedAuditRpt = parsedPath.toString();
+                cLogger.log("ParsedAuditRptPath: " + parsedAuditRpt);
+            }
+            if (PluginUtil.parseFilePath(licList, envVars, parsedPath)) {
+                parsedLicList = parsedPath.toString();
+                cLogger.log("ParsedLicListPath: " + parsedLicList);
+            }
+            if (PluginUtil.parseFilePath(licText, envVars, parsedPath)) {
+                parsedLicText = parsedPath.toString();
+                cLogger.log("ParsedLicTextPath: " + parsedLicText);
+            }
         }
-		
-		if(null != tpalvu) {
-			tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedWhiteList, parsedAuditRpt, parsedLicList, parsedLicText);
-		}
+
+        if (null != tpalvu) {
+            tpalvu.initialize(restAPILoc, restAPIKey, restAPIPID, parsedAppovedLic, parsedLicXlate, parsedNoLicFix,
+                    parsedAuditRpt, parsedLicList, parsedLicText, parsedLicTextInput, mvnRepo, npmRepo);
+        }
     }
 
     @Symbol("tpalv")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-		
-		public static final String defaultRestAPILoc = "http://localhost:8080";
-		public static final String defaultRestAPIKey = "LPfV2H90mbapj6TWLUV6tgu1PXYThFDi";
-		public static final String defaultRestAPIPID = "588d64a8-a208-4d5f-b3f0-1288acd5ee5a";
-		public static final String defaultAppovedLic = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt";
-		public static final String defaultLicXlate = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt";
-		public static final String defaultWhiteList = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_white_list.txt";
-		public static final String defaultAuditRpt = "${WORKSPACE}\\outputs\\movia_audit_out.csv";
-		public static final String defaultLicList = "${WORKSPACE}\\outputs\\movia_license_list.csv";
-		public static final String defaultLicText = "${WORKSPACE}\\outputs\\movia_license_text.txt";
 
-        public FormValidation doCheckRestAPILoc(@QueryParameter String value)
-                throws IOException, ServletException {
+        public static final String defaultRestAPILoc = "http://localhost:8080";
+        public static final String defaultRestAPIKey = "LPfV2H90mbapj6TWLUV6tgu1PXYThFDi";
+        public static final String defaultRestAPIPID = "588d64a8-a208-4d5f-b3f0-1288acd5ee5a";
+        public static final String defaultAppovedLic = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_approved_licenses.txt";
+        public static final String defaultLicXlate = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_lic_xlate_list.txt";
+        public static final String defaultNoLicFix = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\movia_no_lic_fix.txt";
+        public static final String defaultLicTextInput = "${JENKINS_HOME}\\plugins\\modusoperandi-tpalv\\inputs\\License_text_input.txt";
+        public static final String defaultAuditRpt = "${WORKSPACE}\\outputs\\movia_audit_out.csv";
+        public static final String defaultLicList = "${WORKSPACE}\\outputs\\movia_license_list.csv";
+        public static final String defaultLicText = "${WORKSPACE}\\outputs\\movia_license_text.txt";
+        public static final String defaultMVNRepo = "@mo";
+        public static final String defaultNPMRepo = "com.modusoperandi.";
+
+        public FormValidation doCheckRestAPILoc(@QueryParameter String value) throws IOException, ServletException {
             return PluginUtil.doCheckUrl(value);
         }
-		
-		public FormValidation doCheckAppovedLic(@QueryParameter String value)
-                throws IOException, ServletException {
+
+        public FormValidation doCheckAppovedLic(@QueryParameter String value) throws IOException, ServletException {
             return PluginUtil.doCheckPath(value);
         }
-		
-		public FormValidation doCheckLicXlate(@QueryParameter String value)
-                throws IOException, ServletException {
+
+        public FormValidation doCheckLicXlate(@QueryParameter String value) throws IOException, ServletException {
             return PluginUtil.doCheckPath(value);
         }
-		
-		public FormValidation doCheckWhiteList(@QueryParameter String value)
-                throws IOException, ServletException {
+
+        public FormValidation doCheckNoLicFix(@QueryParameter String value) throws IOException, ServletException {
+            return PluginUtil.doCheckPath(value);
+        }
+
+        public FormValidation doCheckLicTextInput(@QueryParameter String value) throws IOException, ServletException {
             return PluginUtil.doCheckPath(value);
         }
 

@@ -5,7 +5,7 @@ import hudson.Plugin;
 /**
  * Initializes the TPALV plugin.
  *
- * @author 
+ * @author
  */
 public class TPALVPlugin extends Plugin {
 
