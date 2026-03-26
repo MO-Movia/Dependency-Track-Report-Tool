@@ -1,4 +1,4 @@
-## Format (one line for each whitelisted file):
+## Format (one line for each no license fix file):
 ## Library name -> license name
 ## Library name -> license name
 ## Line starting with "## " is considered as comment.

@@ -15,9 +15,12 @@
     <f:entry title="${%License Translation File}" field="licXlate">
         <f:textbox default="${descriptor.defaultLicXlate}"/>
     </f:entry>
-    <f:entry title="${%White List File}" field="whiteList">
-        <f:textbox default="${descriptor.defaultWhiteList}"/>
+    <f:entry title="${%No License Fix File}" field="noLicFix">
+        <f:textbox default="${descriptor.defaultNoLicFix}"/>
     </f:entry>
+    <f:entry title="${%License Text Input File}" field="licTextInput">
+        <f:textbox default="${descriptor.defaultLicTextInput}"/>
+    </f:entry>	
      <f:entry title="${%Audit Report}" field="auditRpt">
         <f:textbox default="${descriptor.defaultAuditRpt}"/>
     </f:entry>
@@ -26,5 +29,11 @@
     </f:entry>
     <f:entry title="${%License Text}" field="licText">
         <f:textbox default="${descriptor.defaultLicText}"/>
+    </f:entry>
+    <f:entry title="${%MVN Repository for MO}" field="mvnRepo">
+        <f:textbox default="${descriptor.defaultMVNRepo}"/>
+    </f:entry>
+    <f:entry title="${%NPM Repository for MO}" field="npmRepo">
+        <f:textbox default="${descriptor.defaultNPMRepo}"/>
     </f:entry>
 </j:jelly>
